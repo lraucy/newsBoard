@@ -6,44 +6,74 @@
 		<title>Google Maps JavaScript API v3 Example: Map Simple</title>
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 		<script type="text/javascript">
+			////////
 		var geocoder;
-  var map;
-  var image = 'icon.png';
-  function initialize() {
-    geocoder = new google.maps.Geocoder();
-    var latlng = new google.maps.LatLng(48.861846, 2.35239);
-    var myOptions = {
-      zoom: 2,
-      center: latlng,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    }
-    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-  }
+		var map;
 
-  function codeAddress() {
-    var address = document.getElementById("address").value;
-    geocoder.geocode( { 'address': address}, function(results, status) {
-      if (status == google.maps.GeocoderStatus.OK) {
-        var marker = new google.maps.Marker({
-            map: map,
-            position: results[0].geometry.location,
-			icon: image
-        });
-      } else {
-        alert("Geocode was not successful for the following reason: " + status);
-      }
-    });
-  }
+
+		function initialize() {
+
+
+			var stylez = [
+			{
+				featureType: "road",
+					elementType: "all",
+					stylers: [
+					{ visibility: "off" }
+				]
+			}
+			];
+
+
+			geocoder = new google.maps.Geocoder();
+			var latlng = new google.maps.LatLng(48.861846, 2.35239);
+			var myOptions = {
+				zoom: 2,
+				center: latlng,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			}
+			map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+
+			var styledMapOptions = {
+				name: "noroads"}
+
+			var noroadsMapType = new google.maps.StyledMapType(
+					stylez, styledMapOptions);
+			map.mapTypes.set('noroads', noroadsMapType);
+			map.setMapTypeId('noroads');
+		}
+
+function codeAddress() {
+	var address = document.getElementById("address").value;
+	geocoder.geocode( { 'address': address}, function(results, status) {
+		if (status == google.maps.GeocoderStatus.OK) {
+
+			var numberOptions = {
+				strokeColor: "#FF0000",
+		strokeOpacity: 0.60,
+		strokeWeight: 2,
+		fillColor: "#FF0000",
+		fillOpacity: 0.40,
+		map: map,
+		center: results[0].geometry.location,
+		radius: 400000
+			};
+			countryCircle = new google.maps.Circle(numberOptions);
+		} else {
+			alert("Geocode was not successful for the following reason: " + status);
+		}
+	});
+}
 
 
 
 </script>
 	</head>
-<body onload="initialize()">
- <div id="map_canvas" style="width: 1000px; height: 600px;"></div>
-  <div>
-    <input id="address" type="textbox" value="Sydney, NSW">
-    <input type="button" value="Encode" onclick="codeAddress()">
-  </div>
+	<body onload="initialize()">
+		<div id="map_canvas" style="width: 1000px; height: 600px;"></div>
+		<div>
+			<input id="address" type="textbox" value="Sydney, NSW">
+			<input type="button" value="Encode" onclick="codeAddress()">
+		</div>
 </body></html>
 
