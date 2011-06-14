@@ -15,11 +15,19 @@ function initialize()
 	};
 	map = new google.maps.Map(document.getElementById("map_canvas"), my_map_option);
 
+
+	var my_layer_option = {
+		suppressInfoWindows: true
+	};
+
 	var layer = new google.maps.FusionTablesLayer(992564);
+	layer.setOptions(my_layer_option);
 	layer.setMap(map);
 
 	google.maps.event.addListener(layer, 'click', function(e) {
 		$('#status_map').html(e.row['Content'].value);
+
+		$('#news').empty();
 
 		var lieu = e.row['Location'].value;
 
@@ -29,7 +37,6 @@ function initialize()
 
 
 	google.maps.event.addListener(map, 'zoom_changed', function() {
-		$('#status_map').html(map.getBounds());
 	});
 
 }
@@ -37,16 +44,16 @@ function initialize()
 function getLeftData(response){
 	numRows = response.getDataTable().getNumberOfRows();
 	numCols = response.getDataTable().getNumberOfColumns();
+		$('.googft-info-window').hide();
 
-	$('#news').html('');
 
 	for (i = 0; i < numRows; i++)
 	{
-		$('#news').after('<div>');
+		$('#news').append('<div>');
 		for (j = 0; j < numCols; j++) {
-			$('#news').after(response.getDataTable().getValue(i, j) + ', ');
+			$('#news').append(response.getDataTable().getValue(i, j) + ', ');
 		}
-		$('#news').after('</div>');
+		$('#news').append('</div>');
 	}
 }
-	
+
