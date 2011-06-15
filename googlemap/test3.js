@@ -16,12 +16,8 @@ function initialize()
 	map = new google.maps.Map(document.getElementById("map_canvas"), my_map_option);
 
 
-	var my_layer_option = {
-		suppressInfoWindows: true
-	};
-
+	
 	var layer = new google.maps.FusionTablesLayer(992564);
-	layer.setOptions(my_layer_option);
 	layer.setMap(map);
 
 	google.maps.event.addListener(layer, 'click', function(e) {
@@ -29,9 +25,12 @@ function initialize()
 
 		$('#news').empty();
 
+
+		e.infoWindowHtml = '<div id="info_window"></div>';
+
 		var lieu = e.row['Location'].value;
 
-		var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT 'Content' FROM 992564 WHERE Location='" + lieu + "'"));
+		var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT 'Content', 'Location' FROM 992564 WHERE Location='" + lieu + "'"));
 		query.send(getLeftData);
 	});
 
@@ -44,16 +43,15 @@ function initialize()
 function getLeftData(response){
 	numRows = response.getDataTable().getNumberOfRows();
 	numCols = response.getDataTable().getNumberOfColumns();
-		$('.googft-info-window').hide();
 
 
 	for (i = 0; i < numRows; i++)
 	{
-		$('#news').append('<div>');
+		$('#news,#info_window').append('<div>');
 		for (j = 0; j < numCols; j++) {
-			$('#news').append(response.getDataTable().getValue(i, j) + ', ');
+			$('#news,#info_window').append(response.getDataTable().getValue(i, j) + ', ');
 		}
-		$('#news').append('</div>');
+		$('#news,#info_window').append('</div>');
 	}
 }
 
