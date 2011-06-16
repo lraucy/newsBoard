@@ -1,3 +1,6 @@
+#!/usr/bin/python2
+# -*-coding:Utf-8 -*
+
 """
 Python wrapper for the Yahoo Placemaker API.
 
@@ -34,8 +37,6 @@ TAG_PREFIX = '{http://wherein.yahooapis.com/v1/schema}'
 API_KEY = '3hgLZdrV34E4RaJ_HZQPov0IGkLCJ6QWSv8PNXps8mVt4YeHXG1MXzlsQrJUqu47aNO7LXc-'
 # Yahoo PlaceMaker API URL
 API_URL = 'http://wherein.yahooapis.com/v1/document'
-# URL of the source RSS flux
-URL_SOURCE = 'http://news.google.com/news?ned=us&topic=w&output=rss'
 #URL_SOURCE = 'http://rss.news.yahoo.com/rss/topstories'
 
 class Place(object):
@@ -91,6 +92,18 @@ class PlacemakerPoint(object):
 
 class placemaker(object):
 
+
+    def __init__(self, url):
+        self.flux = feedparser.parse(url)
+        self.titles = []
+        self.links = []
+        self.dates = []
+        self.descriptions = []
+        self.places = []
+        self.longitudes = []
+        self.latitudes = []
+        self.places_def = []
+
     def find_places(self, input, documentType='text/plain', inputLanguage='en-US',
                     outputType='xml', documentTitle='', autoDisambiguate='true',
                     focusWoeid=''):
@@ -124,52 +137,46 @@ class placemaker(object):
         self.doc = self.tree.find('%sdocument' % TAG_PREFIX)
 
         place_details = self.doc.findall('%splaceDetails' % TAG_PREFIX)
-        self.places = [Place(place) for place in place_details]
+        list_places = [Place(place) for place in place_details]
+        return list_places
 
-flux = feedparser.parse(URL_SOURCE)
 
-titles = []
-links = []
-dates = []
-descriptions = []
-places = []
-longitudes = []
-latitudes = []
-places_def = []
+    def process(self):
+        for i in range(len(self.flux['entries'])):
+            self.titles.append(self.flux.entries[i].title)
+            self.links.append(self.flux.entries[i].link)
+            self.dates.append(self.flux.entries[i].date)
+            self.descriptions.append(self.flux.entries[i].description)
+            self.places.append(self.find_places(self.descriptions[i].encode('utf-8', 'ignore')))
 
-p = placemaker()
-for i in range(len(flux['entries'])):
-    titles.append(flux.entries[i].title)
-    links.append(flux.entries[i].link)
-    dates.append(flux.entries[i].date)
-    descriptions.append(flux.entries[i].description)
-    p.find_places(descriptions[i].encode('utf-8', 'ignore'))
-    places.append(p.places)
+        for location in self.places:
+            max_weight = 0
+            if location != []:
+                for place in location:
+                    if place.weight > max_weight:
+                        max_weight = place.weight
 
-for location in places:
-    max_weight = 0
-    if location != []:
-        for place in location:
-            if place.weight > max_weight:
-                max_weight = place.weight
+                for place in location:
+                    if place.weight == max_weight:
+                        self.places_def.append(place)
+                        self.longitudes.append(place.centroid.longitude)
+                        self.latitudes.append(place.centroid.latitude)
+                        break
+            else:
+                self.places_def.append("World")
+                self.longitudes.append(0)
+                self.latitudes.append(0)
 
-        for place in location:
-            if place.weight == max_weight:
-                places_def.append(place)
-                longitudes.append(place.centroid.longitude)
-                latitudes.append(place.centroid.latitude)
-                break
-    else:
-        places_def.append("World")
-        longitudes.append(0)
-        latitudes.append(0)
+    def print_locations(self):
+        for i in range(len(self.titles)):
+            print 'FEED NUMBER : %d' % (i+1)
+            print 'TITLE : %s' % self.titles[i]
+            print 'DATE : %s' % self.dates[i]
+            print 'PLACES : %s' % self.places[i]
+            print 'PLACES DEF : %s' % self.places_def[i]
+            print 'COORD : latitude = ' + str(self.latitudes[i]) + ' longitude = ' + str(self.longitudes[i])
+            print
 
-for i in range(len(titles)):
-    print 'FEED NUMBER : %d' % (i+1)
-    print 'TITLE : %s' % titles[i]
-    print 'DATE : %s' % dates[i]
-    print 'PLACES : %s' % places[i]
-    print 'PLACES DEF : %s' % places_def[i]
-    print 'COORD : latitude = ' + str(latitudes[i]) + ' longitude = ' + str(longitudes[i])
-    print
 
+
+# vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
