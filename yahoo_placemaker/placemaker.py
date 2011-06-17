@@ -26,7 +26,8 @@ __license__ = "BSD"
 
 import urllib
 import urllib2
-import feedparser
+import re
+from feedparser import parse
 from xml.etree import ElementTree
 
 # When using ElementTree to parse the XML returned by the API,
@@ -94,15 +95,20 @@ class placemaker(object):
 
 
     def __init__(self, url):
-        self.flux = feedparser.parse(url)
+        self.flux = parse(url)
         self.titles = []
-        self.links = []
+        self.main_links = []
         self.dates = []
         self.descriptions = []
+        self.descriptions_def = []
         self.places = []
+        self.places_def = []
         self.longitudes = []
         self.latitudes = []
-        self.places_def = []
+        self.towns = []
+        self.countries = []
+        self.urls = []
+        self.pictures = []
 
     def find_places(self, input, documentType='text/plain', inputLanguage='en-US',
                     outputType='xml', documentTitle='', autoDisambiguate='true',
@@ -142,9 +148,10 @@ class placemaker(object):
 
 
     def process(self):
+
         for i in range(len(self.flux['entries'])):
             self.titles.append(self.flux.entries[i].title)
-            self.links.append(self.flux.entries[i].link)
+            self.main_links.append(re.sub(r'http:(.*?)url=', '', self.flux.entries[i].link))
             self.dates.append(self.flux.entries[i].date)
             self.descriptions.append(self.flux.entries[i].description)
             self.places.append(self.find_places(self.descriptions[i].encode('utf-8', 'ignore')))
@@ -167,16 +174,49 @@ class placemaker(object):
                 self.longitudes.append(0)
                 self.latitudes.append(0)
 
+        for description in self.descriptions:
+            # Summaries
+            self.descriptions_def.append(reduce(lambda x, y: x + y, filter(lambda x: re.match(r'[<>]', x) == None, map(lambda x: re.sub(r'</?(b|font size="-1")>', '', x),re.findall(r'<font size="-1">(.*?)</font>', description.encode('utf-8', 'ignore')))), ''))
+
+            # Pictures
+            for picture in re.findall(r'src="([^"]*)"', description.encode('utf-8', 'ignore')):
+                self.pictures.append(picture)
+
+            # Links
+            url_temp = []
+            for url in map(lambda x: re.sub(r'http:(.*?)url=', '', x), re.findall(r'<a href="([^"]*)">', description.encode('utf-8', 'ignore'))):
+                url_temp.append(url)
+                self.urls.append(url_temp)
+
+        for place in self.places_def:
+            if place.placetype == 'Town':
+                temp = re.findall(r'[A-Z][A-Z]', place.name)
+                self.countries.append(temp[0])
+                temp = re.findall(r'^(.*?),', place.name)
+                self.towns.append(temp[0])
+            else:
+                self.countries.append(place.name)
+                self.towns.append(None)
+
     def print_locations(self):
         for i in range(len(self.titles)):
             print 'FEED NUMBER : %d' % (i+1)
             print 'TITLE : %s' % self.titles[i]
+            print 'DESCRIPTION : \n %s' % self.descriptions_def[i]
             print 'DATE : %s' % self.dates[i]
             print 'PLACES : %s' % self.places[i]
             print 'PLACES DEF : %s' % self.places_def[i]
+            print 'COUNTRIES : %s' % self.countries[i]
+            print 'TOWN : %s' % self.towns[i]
             print 'COORD : latitude = ' + str(self.latitudes[i]) + ' longitude = ' + str(self.longitudes[i])
+            print 'MAIN_LINK : %s' % self.main_links[i]
+            print 'PICTURE LINK : %s' % self.pictures[i]
+            print 'MORE LINKS :'
+            for url in self.urls[i]:
+                print url
             print
 
 
-
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
+
+
