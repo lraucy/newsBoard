@@ -1,0 +1,10 @@
+
+# temp files
+.*.swp
+.*.swo
+*~
+\#*#
+
+# python binaries
+*.pyc
+*.pyo
