@@ -40,7 +40,7 @@ API_KEY = '3hgLZdrV34E4RaJ_HZQPov0IGkLCJ6QWSv8PNXps8mVt4YeHXG1MXzlsQrJUqu47aNO7L
 API_URL = 'http://wherein.yahooapis.com/v1/document'
 #URL_SOURCE = 'http://rss.news.yahoo.com/rss/topstories'
 
-class Place(object):
+class PlacemakerPlace(object):
 
     def __init__(self, tree):
         self.place = tree.find('%splace' % TAG_PREFIX)
@@ -77,6 +77,7 @@ class Place(object):
     def __repr__(self):
         return self.name
 
+
 class PlacemakerPoint(object):
 
     def __init__(self, tree):
@@ -88,36 +89,103 @@ class PlacemakerPoint(object):
         if self.longitude:
             self.longitude = float(self.longitude)
 
-    def __repr__(self):
-        return u"<Placemaker Point: '%s, %s'>" % (self.latitude, self.longitude)
 
-class placemaker(object):
+class FeedPlace(object):
 
+    def __init__(self, placemakerplace):
+        self.places = placemakerplace
+        # Liste des lieux présents dans la news
+        if len(self.places) != 0:
+            max_weight = 0
+            for place in self.places:
+                if place.weight > max_weight:
+                    max_weight = place.weight
+                    # Lieu de la news comme étant le plus probable
+                    for place in self.places:
+                        if place.weight == max_weight:
+                            self.place = place
+
+            self.latitude = self.place.centroid.latitude
+            self.longitude = self.place.centroid.longitude
+
+            # Le nom de la ville et du pays associés
+            if self.place.placetype == 'Town':
+                temp = re.findall(r'[A-Z][A-Z]', self.place.name)
+                self.countrie = temp[0]
+                temp = re.findall(r'^(.*?),', self.place.name)
+                self.city = temp[0]
+            else:
+                self.countrie = self.place.name
+                self.city = 'None'
+        else:
+            self.place = "World"
+            self.latitude = 0
+            self.longitude = 0
+            self.countrie = 'All'
+            self.city = 'All'
+
+
+class Feed(object):
+
+    def __init__(self, title='None', date='None', place='None', description='None', link='None', picture='None', other_links='None'):
+        self.title = title
+        self.date = date
+        self.place = place
+        self.description = description
+        self.link = link
+        self.picture = picture
+        self.other_links = other_links
+
+class RssParser(object):
 
     def __init__(self, url):
         self.flux = parse(url)
-        self.titles = []
-        self.main_links = []
-        self.dates = []
-        self.descriptions = []
-        self.descriptions_def = []
-        self.places = []
-        self.places_def = []
-        self.longitudes = []
-        self.latitudes = []
-        self.towns = []
-        self.countries = []
-        self.urls = []
-        self.pictures = []
+        self.list_feeds = []
 
-    def find_places(self, input, documentType='text/plain', inputLanguage='en-US',
+    def process(self):
+        for i in range(len(self.flux['entries'])):
+            feed = Feed()
+            p = Placemaker()
+            feed.title = self.flux.entries[i].title
+            feed.date = self.flux.entries[i].date
+            p.find_places(self.flux.entries[i].description.encode('utf-8', 'ignore'))
+            feed.place = FeedPlace(p.places)
+            feed.description = reduce(lambda x, y: x + y, filter(lambda x: re.match(r'[<>]', x) == None, map(lambda x: re.sub(r'</?(b|font size="-1")>', '', x),re.findall(r'<font size="-1">(.*?)</font>', self.flux.entries[i].description.encode('utf-8', 'ignore')))), '')
+            feed.link = re.sub(r'http:(.*?)url=', '', self.flux.entries[i].link)
+            temp = re.findall(r'src="([^"]*)"', self.flux.entries[i].description.encode('utf-8', 'ignore'))
+            feed.picture = temp[0]
+            feed.other_links = [url for url in map(lambda x: re.sub(r'http:(.*?)url=', '', x), re.findall(r'<a href="([^"]*)">', self.flux.entries[i].description.encode('utf-8', 'ignore')))]
+            self.list_feeds.append(feed)
+        return self.list_feeds
+
+    def print_feeds(self):
+        for feed in self.list_feeds:
+            print 'TITLE : %s' % feed.title
+            print 'DESCRIPTION : \n %s' % feed.description
+            print 'DATE : %s' % feed.date
+            print 'PLACES : %s' % feed.place.places
+            print 'PLACE DEF : %s' % feed.place.place
+            print 'COUNTRY : %s' % feed.place.countrie
+            print 'CITY : %s' % feed.place.city
+            print 'COORD : latitude = ' + str(feed.place.latitude) + ' longitude = ' + str(feed.place.longitude)
+            print 'MAIN LINK : %s' % feed.link
+            print 'PICTURE LINK : %s' % feed.picture
+            print 'MORE LINKS :'
+            for link in feed.other_links:
+                print link
+            print
+
+
+class Placemaker(object):
+
+    def find_places(self, documentContent = 'None', documentType='text/plain', inputLanguage='en-US',
                     outputType='xml', documentTitle='', autoDisambiguate='true',
                     focusWoeid=''):
 
         self.values = {'appid': API_KEY,
                        'documentType': documentType,
                        'inputLanguage': inputLanguage,
-                       'documentContent': input,
+                       'documentContent': documentContent,
                        'outputType': outputType,
                        'documentTitle': documentTitle,
                        'autoDisambiguate': autoDisambiguate,
@@ -143,78 +211,8 @@ class placemaker(object):
         self.doc = self.tree.find('%sdocument' % TAG_PREFIX)
 
         place_details = self.doc.findall('%splaceDetails' % TAG_PREFIX)
-        list_places = [Place(place) for place in place_details]
-        return list_places
-
-
-    def process(self):
-
-        for i in range(len(self.flux['entries'])):
-            self.titles.append(self.flux.entries[i].title)
-            self.main_links.append(re.sub(r'http:(.*?)url=', '', self.flux.entries[i].link))
-            self.dates.append(self.flux.entries[i].date)
-            self.descriptions.append(self.flux.entries[i].description)
-            self.places.append(self.find_places(self.descriptions[i].encode('utf-8', 'ignore')))
-
-        for location in self.places:
-            max_weight = 0
-            if location != []:
-                for place in location:
-                    if place.weight > max_weight:
-                        max_weight = place.weight
-
-                for place in location:
-                    if place.weight == max_weight:
-                        self.places_def.append(place)
-                        self.longitudes.append(place.centroid.longitude)
-                        self.latitudes.append(place.centroid.latitude)
-                        break
-            else:
-                self.places_def.append("World")
-                self.longitudes.append(0)
-                self.latitudes.append(0)
-
-        for description in self.descriptions:
-            # Summaries
-            self.descriptions_def.append(reduce(lambda x, y: x + y, filter(lambda x: re.match(r'[<>]', x) == None, map(lambda x: re.sub(r'</?(b|font size="-1")>', '', x),re.findall(r'<font size="-1">(.*?)</font>', description.encode('utf-8', 'ignore')))), ''))
-
-            # Pictures
-            for picture in re.findall(r'src="([^"]*)"', description.encode('utf-8', 'ignore')):
-                self.pictures.append(picture)
-
-            # Links
-            url_temp = []
-            for url in map(lambda x: re.sub(r'http:(.*?)url=', '', x), re.findall(r'<a href="([^"]*)">', description.encode('utf-8', 'ignore'))):
-                url_temp.append(url)
-                self.urls.append(url_temp)
-
-        for place in self.places_def:
-            if place.placetype == 'Town':
-                temp = re.findall(r'[A-Z][A-Z]', place.name)
-                self.countries.append(temp[0])
-                temp = re.findall(r'^(.*?),', place.name)
-                self.towns.append(temp[0])
-            else:
-                self.countries.append(place.name)
-                self.towns.append(None)
-
-    def print_locations(self):
-        for i in range(len(self.titles)):
-            print 'FEED NUMBER : %d' % (i+1)
-            print 'TITLE : %s' % self.titles[i]
-            print 'DESCRIPTION : \n %s' % self.descriptions_def[i]
-            print 'DATE : %s' % self.dates[i]
-            print 'PLACES : %s' % self.places[i]
-            print 'PLACES DEF : %s' % self.places_def[i]
-            print 'COUNTRIES : %s' % self.countries[i]
-            print 'TOWN : %s' % self.towns[i]
-            print 'COORD : latitude = ' + str(self.latitudes[i]) + ' longitude = ' + str(self.longitudes[i])
-            print 'MAIN_LINK : %s' % self.main_links[i]
-            print 'PICTURE LINK : %s' % self.pictures[i]
-            print 'MORE LINKS :'
-            for url in self.urls[i]:
-                print url
-            print
+        self.places = [PlacemakerPlace(place) for place in place_details]
+        return self.places
 
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
