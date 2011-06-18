@@ -1,10 +1,10 @@
 #!/usr/bin/python2
 # -*-coding:Utf-8 -*
 
-from placemaker import RssParser
+from rssparser import RssParser
 
 # URL of the source RSS flux
-URL_SOURCE = 'http://news.google.com/news?ned=us&topic=s&output=rss'
+URL_SOURCE = 'http://news.google.com/news?ned=us&topic=w&output=rss'
 
 flux_rss = RssParser(URL_SOURCE)
 feeds = flux_rss.process()

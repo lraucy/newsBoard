@@ -8,8 +8,7 @@ from fusiontables.fileimport.fileimporter import CSVImporter
 
 import clientlogindata
 
-from yahoo_placemaker.placemaker import RssParser
-
+from yahoo_placemaker.rssparser import RssParser
 URL_SOURCE = {'http://news.google.com/news?ned=us&topic=w&output=rss',
         'http://news.google.com/news?ned=us&topic=h&output=rss',
         'http://news.google.com/news?ned=us&topic=b&output=rss',
