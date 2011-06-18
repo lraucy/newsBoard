@@ -41,14 +41,14 @@ function initialize()
 }
 
 function setData() {
-	var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Title, Date, Latitude, Longitude, url, Description, Picture FROM 1019598"));
+	var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Latitude, Longitude FROM 1019598"));
 	query.send(getData);
 
 }
 
 function getData(response) {
-	numRows = response.getDataTable().getNumberOfRows();
-	numCols = response.getDataTable().getNumberOfColumns();
+	var numRows = response.getDataTable().getNumberOfRows();
+	var numCols = response.getDataTable().getNumberOfColumns();
 	
 	for (i = 0; i < numRows; i++) {
 		var row = [];
@@ -57,13 +57,12 @@ function getData(response) {
 		}
 		placePoint(row);
 	}
-
 }
 
 function placePoint(row) {
-	if (row[2] != "" && row[3] != "")
+	if (row[0] != "" && row[1] != "")
 	{
-		var coordinate = new google.maps.LatLng(row[2], row[3]);
+		var coordinate = new google.maps.LatLng(row[0], row[1]);
 		
 		var marker = new google.maps.Marker({
 			map: map,
@@ -72,12 +71,29 @@ function placePoint(row) {
 
 		google.maps.event.addListener(marker, 'click', function(event) {
 			if (lastWindow) lastWindow.close();
-			lastWindow = new google.maps.InfoWindow( {
-				position: coordinate,
-				content: '<h2><a href="' + row[4] + '">' + row[0] + '</a></h2><p>' + row[5] + '</p>'
-			});
-			lastWindow.open(map);
-		});
+			var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Title, Date, url, Description, Picture, Latitude, Longitude FROM 1019598 WHERE Latitude='" + row[0] + "' AND Longitude='" + row[1] + "'"));
+			query.send(displayPopup);
+				});
 	}
+}
 
+function displayPopup(response) {
+	var htmlContent = "";
+	var numRows = response.getDataTable().getNumberOfRows();
+	var numCols = response.getDataTable().getNumberOfColumns();
+
+	coordinate = new google.maps.LatLng(response.getDataTable().getValue(0, 5), response.getDataTable().getValue(0,6));
+	for (i = 0; i < numRows; i++) {
+		var row = [];
+		htmlContent += '<div class="news_in_list">';
+		for (j = 0; j < numCols; j++) {
+			row.push(response.getDataTable().getValue(i, j));
+		}
+		htmlContent += '<h3><a href="' + row[2] + '">' + row[0] + '</a></h3><p>' + row[3] + '</div>';
+	}
+	lastWindow = new google.maps.InfoWindow( {
+		position: coordinate,
+		content: htmlContent
+	});
+	lastWindow.open(map);
 }
