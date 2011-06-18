@@ -153,7 +153,10 @@ class RssParser(object):
             feed.description = reduce(lambda x, y: x + y, filter(lambda x: re.match(r'[<>]', x) == None, map(lambda x: re.sub(r'</?(b|font size="-1")>', '', x),re.findall(r'<font size="-1">(.*?)</font>', self.flux.entries[i].description.encode('utf-8', 'ignore')))), '')
             feed.link = re.sub(r'http:(.*?)url=', '', self.flux.entries[i].link)
             temp = re.findall(r'src="([^"]*)"', self.flux.entries[i].description.encode('utf-8', 'ignore'))
-            feed.picture = temp[0]
+            if len(temp) != 0:
+                feed.picture = temp[0]
+            else:
+                feed.picture = 'None'
             feed.other_links = [url for url in map(lambda x: re.sub(r'http:(.*?)url=', '', x), re.findall(r'<a href="([^"]*)">', self.flux.entries[i].description.encode('utf-8', 'ignore')))]
             self.list_feeds.append(feed)
         return self.list_feeds

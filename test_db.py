@@ -8,7 +8,7 @@ from fusiontables.fileimport.fileimporter import CSVImporter
 
 import clientlogindata
 
-from yahoo_placemaker.placemaker import placemaker
+from yahoo_placemaker.placemaker import RssParser
 
 URL_SOURCE = {'http://news.google.com/news?ned=us&topic=w&output=rss',
         'http://news.google.com/news?ned=us&topic=h&output=rss',
@@ -29,23 +29,22 @@ token = ClientLogin().authorize(auth.login, auth.password)
 ft_client = fusiontables.ftclient.ClientLoginFTClient(token)
 
 for url in URL_SOURCE:
-    p = placemaker(url)
-    p.process()
-    for i in range(len(p.titles)):
+    flux_rss = RssParser(url)
+    feeds = flux_rss.process()
+    for feed in feeds:
         if ft_client.query(SQL().select(tableid, None,"url='" +\
-            str(p.main_links[i]) + "'")).count('\n')==1 and p.latitudes[i]!=0 and\
-        p.longitudes[i]!=0:
+            str(feed.link) + "'")).count('\n')==1 and feed.place.latitude==0\
+        and feed.place.longitude==0:
             rowid = int(ft_client.query(SQL().insert(tableid, {'Title':
-                str(p.titles[i]),
-                'Number': str((i+1)),
-                'Location': str(p.places_def[i]),
-                'Date': str(p.dates[i]),
-                'Latitude': str(p.latitudes[i]),
-                'Longitude': str(p.longitudes[i]),
-                'url': str(p.main_links[i]),
-                'Picture': str(p.pictures[i]),
-                'Country': str(p.countries[i]),
-                'City': str(p.towns[i]),
+                str(feed.title),
+                'Location': str(feed.place.place),
+                'Date': str(feed.date),
+                'Latitude': str(feed.place.latitude),
+                'Longitude': str(feed.place.longitude),
+                'url': str(feed.link),
+                'Picture': str(feed.picture),
+                'Country': str(feed.place.countrie),
+                'City': str(feed.place.city),
                 })).split("\n")[1])
             print rowid
 
