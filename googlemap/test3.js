@@ -63,7 +63,7 @@ function getData(response) {
 function placePoint(row) {
 	if (row[2] != "" && row[3] != "")
 	{
-		coordinate = new google.maps.LatLng(row[2], row[3]);
+		var coordinate = new google.maps.LatLng(row[2], row[3]);
 		
 		var marker = new google.maps.Marker({
 			map: map,
