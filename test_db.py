@@ -45,6 +45,7 @@ for url in URL_SOURCE:
                 'Picture': str(feed.picture),
                 'Country': str(feed.place.countrie),
                 'City': str(feed.place.city),
+                'Description': str(feed.description),
                 })).split("\n")[1])
             print rowid
 
