@@ -1,6 +1,7 @@
 var map;
 var countryCircle;
 var tableid = 1019598;
+var lastWindow;
 
 var countryList = {};
 
@@ -60,12 +61,23 @@ function getData(response) {
 }
 
 function placePoint(row) {
-	coordinate = new google.maps.LatLng(row[2], row[3]);
-	
-	var marker = new google.maps.Marker({
-		map: map,
-		position: coordinate
-	});
+	if (row[2] != "" && row[3] != "")
+	{
+		coordinate = new google.maps.LatLng(row[2], row[3]);
+		
+		var marker = new google.maps.Marker({
+			map: map,
+			position: coordinate
+		});
 
+		google.maps.event.addListener(marker, 'click', function(event) {
+			if (lastWindow) lastWindow.close();
+			lastWindow = new google.maps.InfoWindow( {
+				position: coordinate,
+				content: '<h2><a href="' + row[4] + '">' + row[0] + '</a></h2><p>' + row[5] + '</p>'
+			});
+			lastWindow.open(map);
+		});
+	}
 
 }
