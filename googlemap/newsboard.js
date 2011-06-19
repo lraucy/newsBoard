@@ -92,10 +92,29 @@ function displayPopup(response) {
 		}
 		htmlContent += '<h3><a href="' + row[2] + '" class="external_link">' + row[0] + '</a></h3><p>' + row[3] + '</div>';
 	}
-	lastWindow = new google.maps.InfoWindow( {
-		position: coordinate,
-		content: htmlContent
-	});
+	var boxText = document.createElement("div");
+	boxText.style.cssText = "border: 1px solid black; margin-top: 8px; background: #f5f5f5; padding: 5px;";
+	boxText.innerHTML = htmlContent;
+	var myOptions = {
+		content: boxText,
+		disableAutoPan: false,
+		maxWidth: 0,
+		pixelOffset: new google.maps.Size(-140, 0),
+		zIndex: null,
+		boxStyle: {
+			opacity: 0.90,
+			width: "280px"
+		},
+		closeBoxMargin: "10px 2px 2px 2px",
+		closeBoxURL: "http://www.google.com/intl/en_us/mapfiles/close.gif",
+		infoBoxClearance: new google.maps.Size(1, 1),
+		isHidden:false,
+		pane: "floatPane",
+		enableEventPropagation: true,
+		position: coordinate
+	};
+
+	lastWindow = new InfoBox(myOptions);
 	google.maps.event.addListener(lastWindow, 'domready', addPopup);
 	lastWindow.open(map);
 }
