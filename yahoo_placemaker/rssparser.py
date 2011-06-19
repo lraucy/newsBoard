@@ -56,7 +56,7 @@ class FeedPlace(object):
 
 class Feed(object):
 
-    def __init__(self, title='None', date='None', place='None', description='None', link='None', picture='None', other_links='None'):
+    def __init__(self, title='None', date='None', place='None', description='None', link='None', picture='None', other_links='None', number='None'):
         self.title = title
         self.date = date
         self.place = place
@@ -64,6 +64,7 @@ class Feed(object):
         self.link = link
         self.picture = picture
         self.other_links = other_links
+        self.number = number
 
 class RssParser(object):
 
@@ -79,6 +80,7 @@ class RssParser(object):
             feed.date = self.flux.entries[i].date
             p.find_places(self.flux.entries[i].description.encode('utf-8', 'ignore'))
             feed.place = FeedPlace(p.places)
+            feed.number = self.flux.entries[i].guid.split('=')[1]
             feed.description = reduce(lambda x, y: x + y, filter(lambda x: re.match(r'[<>]', x) == None, map(lambda x: re.sub(r'</?(b|font size="-1")>', '', x),re.findall(r'<font size="-1">(.*?)</font>', self.flux.entries[i].description.encode('utf-8', 'ignore')))), '')
             feed.link = re.sub(r'http:(.*?)url=', '', self.flux.entries[i].link)
             temp = re.findall(r'src="([^"]*)"', self.flux.entries[i].description.encode('utf-8', 'ignore'))
@@ -107,4 +109,5 @@ class RssParser(object):
             print 'MORE LINKS :'
             for link in feed.other_links:
                 print link
+            print 'NUMBER : %s' % feed.number
             print
