@@ -72,17 +72,20 @@ class FeedPlace(object):
             self.placetype = self.place.placetype
 
             # On trouve le continent et le pays associé au lieu de l'article
-            if self.placetype == 'Continent':
+            if self.place.name in ['Africa', 'Asia', 'North America', 'South America', 'Europe', 'Antarctica', 'Oceania']:
                 self.continent = self.place
                 self.country = 'None'
             else:
+                self.continent = 'None'
+                self.country = 'None'
+
                 continents = geo.find_belongtos_by_woeid(self.place.woeid)
                 for continent in continents:
-                    if continent.placetype == 'Continent':
+                    if continent.name in ['Africa', 'Asia', 'North America', 'South America', 'Europe', 'Antarctica', 'Oceania']:
                         self.continent = continent;
                         break
 
-                if self.place.placetype in ['Town', 'Local Administrative Area', 'County', 'State', 'Province', 'Prefecture', 'Region', 'Federal District', 'Department', 'District', 'Commune', 'Municipality', 'Ward', 'Suburb', 'POI']:
+                if self.place.placetype in ['Town', 'Airport', 'Drainage', 'Local Administrative Area', 'County', 'State', 'Province', 'Prefecture', 'Region', 'Federal District', 'Department', 'District', 'Commune', 'Municipality', 'Ward', 'Suburb', 'POI']:
                     countries = geo.find_belongtos_by_woeid(self.place.woeid)
                     for country in countries:
                         if country.placetype == 'Country':
@@ -99,6 +102,7 @@ class FeedPlace(object):
             self.latitude = 0
             self.longitude = 0
             self.woeid = 0
+
 
 
 class Feed(object):
@@ -124,7 +128,7 @@ class RssParser(object):
             feed = Feed()
             p = Placemaker()
             feed.title = self.flux.entries[i].title.encode('utf-8', 'ignore')
-            feed.date = self.flux.entries[i].date
+            feed.date = self.flux.entries[i].date.encode('utf-8', 'ignore')
             feed.number = self.flux.entries[i].guid.split('=')[1]
             feed.description = reduce(lambda x, y: x + y, filter(lambda x: re.match(r'[<>]', x) == None, map(lambda x: re.sub(r'</?(b|font size="-1")>', '', x),re.findall(r'<font size="-1">(.*?)</font>', self.flux.entries[i].description))), '')
             feed.description = feed.description.encode('utf-8', 'ignore')
@@ -132,6 +136,7 @@ class RssParser(object):
             p.find_places(placemaker_place)
             feed.place = FeedPlace(p.places)
             feed.link = re.sub(r'http:(.*?)url=', '', self.flux.entries[i].link)
+            feed.link = feed.link.encode('utf-8', 'ignore')
             temp = re.findall(r'src="([^"]*)"', self.flux.entries[i].description.encode('utf-8', 'ignore'))
             if len(temp) != 0:
                 feed.picture = temp[0]

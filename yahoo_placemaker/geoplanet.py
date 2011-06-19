@@ -244,6 +244,8 @@ class Geoplanet(object):
 
         return self.descendants
 
+    def find_continents(self, woeid
+
 
 def request_geoplanet(url, values):
 

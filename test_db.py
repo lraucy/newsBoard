@@ -10,13 +10,20 @@ import clientlogindata
 
 from yahoo_placemaker.rssparser import RssParser
 URL_SOURCE = {'http://news.google.com/news?ned=us&topic=w&output=rss',
-        'http://news.google.com/news?ned=us&topic=h&output=rss',
-        'http://news.google.com/news?ned=us&topic=b&output=rss',
-        'http://news.google.com/news?ned=us&topic=t&output=rss',
-        'http://news.google.com/news?ned=us&topic=m&output=rss',
-        'http://news.google.com/news?ned=us&topic=n&output=rss',
-        'http://news.google.com/news?ned=us&topic=s&output=rss',
-        'http://news.google.com/news?ned=us&topic=e&output=rss',
+              'http://news.google.com/news?ned=us&topic=h&output=rss',
+              'http://news.google.com/news?ned=us&topic=b&output=rss',
+              'http://news.google.com/news?ned=us&topic=t&output=rss',
+              'http://news.google.com/news?ned=us&topic=m&output=rss',
+              'http://news.google.com/news?ned=us&topic=s&output=rss',
+              'http://news.google.com/news?ned=us&topic=e&output=rss',
+              'http://news.google.com/news?ned=au&topic=n&output=rss',
+              'http://news.google.com/news?ned=ca&topic=n&output=rss',
+              'http://news.google.com/news?ned=in&topic=n&output=rss',
+              'http://news.google.com/news?ned=ie&topic=n&output=rss',
+              'http://news.google.com/news?ned=nz&topic=n&output=rss',
+              'http://news.google.com/news?ned=en_za&topic=h&output=rss',
+              'http://news.google.com/news?ned=us&topic=n&output=rss',
+              'http://news.google.com/news?ned=uk&topic=n&output=rss',
         }
 
 import sys, getpass
@@ -27,6 +34,8 @@ auth = clientlogindata.ClientLoginData()
 
 token = ClientLogin().authorize(auth.login, auth.password)
 ft_client = fusiontables.ftclient.ClientLoginFTClient(token)
+
+ft_client.query(SQL().deleteAllRows(tableid))
 
 for url in URL_SOURCE:
     flux_rss = RssParser(url)
@@ -49,9 +58,9 @@ for url in URL_SOURCE:
                 'Longitude': str(feed.place.longitude),
                 'url': str(feed.link),
                 'Picture': str(feed.picture),
-                'Continent': str(feed.place.continent),
-                'Country': str(feed.place.country),
-                'Description': feed.description,
+                'Continent': str(feed.place.continent).replace("'","\\'"),
+                'Country': str(feed.place.country).replace("'","\\'"),
+                'Description': feed.description.decode('utf-8', 'ignore').replace("'","\\'"),
                 })).split("\n")[1])
             print rowid
 
