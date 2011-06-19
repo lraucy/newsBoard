@@ -111,6 +111,19 @@ class SQL:
 
     return "UPDATE %d SET %s WHERE ROWID = '%d'" % (table_id, updateStatement, row_id)
 
+  def deleteAllRows(self, table_id):
+    """ build DELETE sql statement but delete all rows
+    Args:
+      table_id: the id of the table
+
+    Returns:
+      the sql statement
+      
+    Note:
+      Added by NewsBoard team
+    """
+    return "DELETE FROM %d" % table_id
+
   def delete(self, table_id, row_id):
     """ Build DELETE sql statement.
 
