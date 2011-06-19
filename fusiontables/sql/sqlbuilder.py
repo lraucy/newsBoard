@@ -164,7 +164,7 @@ class SQL:
         stringValues = '%s%f' % (stringValues, value)
       else:
         stringValues = "%s'%s'" % (stringValues,
-                                   value.encode('string-escape'))
+                                   value.replace("'","\\'"))
       if count < len(values): stringValues = "%s," % (stringValues)
       count += 1
 
