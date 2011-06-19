@@ -36,9 +36,9 @@ for url in URL_SOURCE:
         print feed.title
         print feed.description
         print feed.link
-        if ft_client.query(SQL().select(tableid, None,"Number='" + feed.number\
-            + "'")).count('\n')==1 and (feed.place.latitude!=0\
-        or feed.place.longitude!=0):
+        if ft_client.query(SQL().select(tableid, None,"Title='" +\
+            feed.title.replace("'","\\'") + "'")).count('\n')==1 and\
+            (feed.place.latitude!=0 or feed.place.longitude!=0):
             rowid = int(ft_client.query(SQL().insert(tableid, {'Title':
                 feed.title.replace("'","\\'"),
                 'Location': str(feed.place.place).replace("'","\\'"),
@@ -50,7 +50,7 @@ for url in URL_SOURCE:
                 'Picture': str(feed.picture),
                 'Country': str(feed.place.countrie).replace("'","\\'"),
                 'City': str(feed.place.city).replace("'","\\'"),
-                'Description': str(feed.description).replace("'","\\'"),
+                'Description': feed.description.decode('utf-8', 'ignore').replace("'","\\'"),
                 })).split("\n")[1])
             print rowid
 
