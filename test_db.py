@@ -36,7 +36,8 @@ for url in URL_SOURCE:
         print feed.title
         print feed.description
         print feed.link
-        if ft_client.query(SQL().select(tableid, None,"Number=" + feed.number)).count('\n')==1 and (feed.place.latitude!=0\
+        if ft_client.query(SQL().select(tableid, None,"Number='" + feed.number\
+            + "'")).count('\n')==1 and (feed.place.latitude!=0\
         or feed.place.longitude!=0):
             rowid = int(ft_client.query(SQL().insert(tableid, {'Title':
                 str(feed.title),
