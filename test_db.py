@@ -40,17 +40,17 @@ for url in URL_SOURCE:
             + "'")).count('\n')==1 and (feed.place.latitude!=0\
         or feed.place.longitude!=0):
             rowid = int(ft_client.query(SQL().insert(tableid, {'Title':
-                str(feed.title),
-                'Location': str(feed.place.place),
+                feed.title.replace("'","\\'"),
+                'Location': str(feed.place.place).replace("'","\\'"),
                 'Date': str(feed.date),
                 'Number': str(feed.number),
                 'Latitude': str(feed.place.latitude),
                 'Longitude': str(feed.place.longitude),
                 'url': str(feed.link),
                 'Picture': str(feed.picture),
-                'Country': str(feed.place.countrie),
-                'City': str(feed.place.city),
-                'Description': feed.description,
+                'Country': str(feed.place.countrie).replace("'","\\'"),
+                'City': str(feed.place.city).replace("'","\\'"),
+                'Description': str(feed.description).replace("'","\\'"),
                 })).split("\n")[1])
             print rowid
 
