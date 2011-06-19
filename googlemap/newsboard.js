@@ -19,6 +19,7 @@ function initialize()
 
 	setData();
 	
+
 /*	
 	google.maps.event.addListener(layer, 'click', function(e) {
 		$('#status_map').html(e.row['Content'].value);
@@ -89,11 +90,12 @@ function displayPopup(response) {
 		for (j = 0; j < numCols; j++) {
 			row.push(response.getDataTable().getValue(i, j));
 		}
-		htmlContent += '<h3><a href="' + row[2] + '">' + row[0] + '</a></h3><p>' + row[3] + '</div>';
+		htmlContent += '<h3><a href="' + row[2] + '" class="external_link">' + row[0] + '</a></h3><p>' + row[3] + '</div>';
 	}
 	lastWindow = new google.maps.InfoWindow( {
 		position: coordinate,
 		content: htmlContent
 	});
+	google.maps.event.addListener(lastWindow, 'domready', addPopup);
 	lastWindow.open(map);
 }
