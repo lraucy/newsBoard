@@ -3,6 +3,7 @@ var countryCircle;
 var tableid = 1019598;
 var lastWindow;
 var boxText;
+var listMarkers = [];
 
 var countryList = {};
 
@@ -17,6 +18,7 @@ function initialize()
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
 	map = new google.maps.Map(document.getElementById("map_canvas"), my_map_option);
+	var mc = new MarkerClusterer(map);
 
 	setData();
 	
@@ -38,6 +40,8 @@ function getData(response) {
 	var numRows = response.getDataTable().getNumberOfRows();
 	var numCols = response.getDataTable().getNumberOfColumns();
 	
+	var continents = [];
+	
 	for (i = 0; i < numRows; i++) {
 		var row = [];
 		for (j = 0; j < numCols; j++) {
@@ -45,7 +49,10 @@ function getData(response) {
 		}
 		placePoint(row);
 	}
+	var MarkerCluster = new MarkerClusterer(map, listMarkers);
 }
+
+
 
 // place a news on the map
 function placePoint(row) {
@@ -54,7 +61,6 @@ function placePoint(row) {
 		var coordinate = new google.maps.LatLng(row[0], row[1]);
 		
 		var marker = new google.maps.Marker({
-			map: map,
 			position: coordinate
 		});
 
@@ -64,6 +70,7 @@ function placePoint(row) {
 			var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Title, Date, url, Description, Picture, Latitude, Longitude FROM 1019598 WHERE Latitude='" + row[0] + "' AND Longitude='" + row[1] + "'"));
 			query.send(displayPopup);
 				});
+		listMarkers.push(marker);
 	}
 }
 
