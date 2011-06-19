@@ -29,22 +29,27 @@ ft_client = fusiontables.ftclient.ClientLoginFTClient(token)
 
 for url in URL_SOURCE:
     flux_rss = RssParser(url)
+    print url
     feeds = flux_rss.process()
     for feed in feeds:
-        if ft_client.query(SQL().select(tableid, None,"url='" +\
-            str(feed.link) + "'")).count('\n')==1 and feed.place.latitude==0\
-        and feed.place.longitude==0:
+        print "\n"
+        print feed.title
+        print feed.description
+        print feed.link
+        if ft_client.query(SQL().select(tableid, None,"Number=" + feed.number)).count('\n')==1 and (feed.place.latitude!=0\
+        or feed.place.longitude!=0):
             rowid = int(ft_client.query(SQL().insert(tableid, {'Title':
                 str(feed.title),
                 'Location': str(feed.place.place),
                 'Date': str(feed.date),
+                'Number': str(feed.number),
                 'Latitude': str(feed.place.latitude),
                 'Longitude': str(feed.place.longitude),
                 'url': str(feed.link),
                 'Picture': str(feed.picture),
                 'Country': str(feed.place.countrie),
                 'City': str(feed.place.city),
-                'Description': str(feed.description),
+                'Description': feed.description,
                 })).split("\n")[1])
             print rowid
 
