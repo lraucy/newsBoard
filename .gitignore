@@ -8,5 +8,6 @@
 # python binaries
 *.pyc
 *.pyo
+*.py.orig
 
 clientlogindata.py
