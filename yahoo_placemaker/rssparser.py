@@ -14,43 +14,90 @@ API_URL = 'http://wherein.yahooapis.com/v1/document'
 import re
 from feedparser import parse
 from placemaker import Placemaker
+from geoplanet import Geoplanet
 
 class FeedPlace(object):
 
     def __init__(self, placemakerplace):
+
         self.places = placemakerplace
-        # Liste des lieux présents dans la news
+        geo = Geoplanet()
+
+        # On définit le lieu le plus probable de la
+        # news celui qui a le plus de poids dans le feed
         if len(self.places) != 0:
             max_weight = 0
             for place in self.places:
                 if place.weight > max_weight:
                     max_weight = place.weight
-                    # Lieu de la news comme étant le plus probable
                     for place in self.places:
                         if place.weight == max_weight:
                             self.place = place
 
+            # Si le lieu le plus probable est trop étendu, on essaie de trouver
+            # dans la liste un lieu descendant de ce dernier
+            # -> Le lieu le plus probable devient ce lieu descendant
+            if self.place.placetype in ['Continent', 'Supername', 'Colloquial']:
+                children = geo.find_children_by_woeid(self.place.woeid, 200)
+                #descendants = geo.find_descendants_by_woeid(self.place.woeid)
+                for child in children:
+                    for place in self.places:
+                        if int(child.woeid) == int(place.woeid):
+                            self.place = place
+                            break
+                        break
+
+            # On regarde si il n'y a pas une ville dans la liste dont le
+            # parent est le lieu choisi comme étant le plus probable
+            # -> Le lieu le plus probable devient cette ville
+            for place in self.places:
+                if place.placetype in ['Town', 'Local Administrative Area', 'County', 'State', 'Province', 'Prefecture', 'Region', 'Federal District', 'Department', 'District', 'Commune', 'Municipality', 'Ward']:
+#                    print place.placetype, place.name, '       ', place.name[-2:]
+                    country_related = geo.find_places_by_name(place.name[-2:])
+                    try :
+                        if country_related[0].woeid == self.place.woeid:
+                            self.place = place
+                        else:
+                            if str(country_related[0].name) == str(self.place.name):
+                                self.place = place
+                    except IndexError:
+                        pass
+
+            # On remplit les champs du centroide
             self.latitude = self.place.centroid.latitude
             self.longitude = self.place.centroid.longitude
 
+            # On remplit les informations complémentaires
             self.woeid = self.place.woeid;
             self.placetype = self.place.placetype
 
-            # Le nom de la ville et du pays associés
-            if self.place.placetype == 'Town':
-                temp = re.findall(r'[A-Z][A-Z]', self.place.name)
-                self.countrie = temp[0]
-                temp = re.findall(r'^(.*?),', self.place.name)
-                self.city = temp[0]
+            # On trouve le continent et le pays associé au lieu de l'article
+            if self.placetype == 'Continent':
+                self.continent = self.place
+                self.country = 'None'
             else:
-                self.countrie = self.place.name
-                self.city = 'None'
+                continents = geo.find_belongtos_by_woeid(self.place.woeid)
+                for continent in continents:
+                    if continent.placetype == 'Continent':
+                        self.continent = continent;
+                        break
+
+                if self.place.placetype in ['Town', 'Local Administrative Area', 'County', 'State', 'Province', 'Prefecture', 'Region', 'Federal District', 'Department', 'District', 'Commune', 'Municipality', 'Ward', 'Suburb', 'POI']:
+                    countries = geo.find_belongtos_by_woeid(self.place.woeid)
+                    for country in countries:
+                        if country.placetype == 'Country':
+                            self.country = country;
+                            break
+                else:
+                    self.country = self.place;
+
         else:
-            self.place = "World"
+            self.place = 'World'
+            self.placetype = 'None'
+            self.continent = 'Earth'
+            self.country = 'None'
             self.latitude = 0
             self.longitude = 0
-            self.countrie = 'All'
-            self.city = 'All'
             self.woeid = 0
 
 
@@ -76,12 +123,14 @@ class RssParser(object):
         for i in range(len(self.flux['entries'])):
             feed = Feed()
             p = Placemaker()
-            feed.title = self.flux.entries[i].title
+            feed.title = self.flux.entries[i].title.encode('utf-8', 'ignore')
             feed.date = self.flux.entries[i].date
-            p.find_places(self.flux.entries[i].description.encode('utf-8', 'ignore'))
-            feed.place = FeedPlace(p.places)
             feed.number = self.flux.entries[i].guid.split('=')[1]
-            feed.description = reduce(lambda x, y: x + y, filter(lambda x: re.match(r'[<>]', x) == None, map(lambda x: re.sub(r'</?(b|font size="-1")>', '', x),re.findall(r'<font size="-1">(.*?)</font>', self.flux.entries[i].description.encode('utf-8', 'ignore')))), '')
+            feed.description = reduce(lambda x, y: x + y, filter(lambda x: re.match(r'[<>]', x) == None, map(lambda x: re.sub(r'</?(b|font size="-1")>', '', x),re.findall(r'<font size="-1">(.*?)</font>', self.flux.entries[i].description))), '')
+            feed.description = feed.description.encode('utf-8', 'ignore')
+            placemaker_place = feed.description + feed.title
+            p.find_places(placemaker_place)
+            feed.place = FeedPlace(p.places)
             feed.link = re.sub(r'http:(.*?)url=', '', self.flux.entries[i].link)
             temp = re.findall(r'src="([^"]*)"', self.flux.entries[i].description.encode('utf-8', 'ignore'))
             if len(temp) != 0:
@@ -99,9 +148,9 @@ class RssParser(object):
             print 'DATE : %s' % feed.date
             print 'PLACES : %s' % feed.place.places
             print 'PLACE TYPE : %s' % feed.place.placetype
-            print 'PLACE DEF : %s' % feed.place.place
-            print 'COUNTRY : %s' % feed.place.countrie
-            print 'CITY : %s' % feed.place.city
+            print 'CONTINENT : %s' % feed.place.continent
+            print 'COUNTRY : %s' % feed.place.country
+            print 'PLACE : %s' % feed.place.place
             print 'COORD : latitude = ' + str(feed.place.latitude) + ' longitude = ' + str(feed.place.longitude)
             print 'WoeID : %s ' % feed.place.woeid
             print 'MAIN LINK : %s' % feed.link

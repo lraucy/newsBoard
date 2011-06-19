@@ -14,6 +14,7 @@ URL_SOURCE = {'http://news.google.com/news?ned=us&topic=w&output=rss',
         'http://news.google.com/news?ned=us&topic=b&output=rss',
         'http://news.google.com/news?ned=us&topic=t&output=rss',
         'http://news.google.com/news?ned=us&topic=m&output=rss',
+        'http://news.google.com/news?ned=us&topic=n&output=rss',
         'http://news.google.com/news?ned=us&topic=s&output=rss',
         'http://news.google.com/news?ned=us&topic=e&output=rss',
         }
@@ -48,9 +49,9 @@ for url in URL_SOURCE:
                 'Longitude': str(feed.place.longitude),
                 'url': str(feed.link),
                 'Picture': str(feed.picture),
-                'Country': str(feed.place.countrie).replace("'","\\'"),
-                'City': str(feed.place.city).replace("'","\\'"),
-                'Description': feed.description.decode('utf-8', 'ignore').replace("'","\\'"),
+                'Continent': str(feed.place.continent),
+                'Country': str(feed.place.country),
+                'Description': feed.description,
                 })).split("\n")[1])
             print rowid
 
