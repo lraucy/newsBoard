@@ -2,6 +2,7 @@ var map;
 var countryCircle;
 var tableid = 1019598;
 var lastWindow;
+var boxText;
 
 var countryList = {};
 
@@ -19,6 +20,8 @@ function initialize()
 
 	setData();
 	
+	boxText = document.createElement("div");
+	boxText.style.cssText = "border: 1px solid black; margin-top: 8px; background: #f5f5f5; padding: 5px;";
 
 /*	
 	google.maps.event.addListener(layer, 'click', function(e) {
@@ -92,8 +95,6 @@ function displayPopup(response) {
 		}
 		htmlContent += '<h3><a href="' + row[2] + '" class="external_link">' + row[0] + '</a></h3><p>' + row[3] + '</div>';
 	}
-	var boxText = document.createElement("div");
-	boxText.style.cssText = "border: 1px solid black; margin-top: 8px; background: #f5f5f5; padding: 5px;";
 	boxText.innerHTML = htmlContent;
 	var myOptions = {
 		content: boxText,
