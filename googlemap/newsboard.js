@@ -23,33 +23,17 @@ function initialize()
 	boxText = document.createElement("div");
 	boxText.style.cssText = "border: 1px solid black; margin-top: 8px; background: #f5f5f5; padding: 5px;";
 
-/*	
-	google.maps.event.addListener(layer, 'click', function(e) {
-		$('#status_map').html(e.row['Content'].value);
-
-		$('#news').empty();
-
-
-		e.infoWindowHtml = '<div id="info_window"></div>';
-
-		var lieu = e.row['Location'].value;
-
-		var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT 'Content', 'Location' FROM 992564 WHERE Location='" + lieu + "'"));
-		query.send(getLeftData);
-	});
-
-
-	google.maps.event.addListener(map, 'zoom_changed', function() {
-	});*/
-
 }
 
+
+// get the data to place on the map
 function setData() {
 	var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Latitude, Longitude FROM 1019598"));
 	query.send(getData);
 
 }
 
+// use the data collected via SQL and place them on the map
 function getData(response) {
 	var numRows = response.getDataTable().getNumberOfRows();
 	var numCols = response.getDataTable().getNumberOfColumns();
@@ -63,6 +47,7 @@ function getData(response) {
 	}
 }
 
+// place a news on the map
 function placePoint(row) {
 	if (row[0] != "" && row[1] != "")
 	{
@@ -73,6 +58,7 @@ function placePoint(row) {
 			position: coordinate
 		});
 
+		// event when click, search all the news on this point
 		google.maps.event.addListener(marker, 'click', function(event) {
 			if (lastWindow) lastWindow.close();
 			var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Title, Date, url, Description, Picture, Latitude, Longitude FROM 1019598 WHERE Latitude='" + row[0] + "' AND Longitude='" + row[1] + "'"));
@@ -81,6 +67,7 @@ function placePoint(row) {
 	}
 }
 
+// function called to display the popup containing the different news on the point
 function displayPopup(response) {
 	var htmlContent = "";
 	var numRows = response.getDataTable().getNumberOfRows();
