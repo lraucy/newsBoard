@@ -51,7 +51,8 @@ function getData(response) {
 	}
 	var optionsCluster = {
 		zoomOnClick: false,
-		maxZoom: 8
+		maxZoom: 8,
+		minimumClusterSize:1
 	}
 	var MarkerCluster = new MarkerClusterer(map, listMarkers, optionsCluster);
 	google.maps.event.addListener(MarkerCluster, "clusterclick", click_cluster);
