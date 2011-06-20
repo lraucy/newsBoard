@@ -35,12 +35,12 @@ h2{
 #left_side{
 	width:800px;
 	border-right:1px #ddd solid;
-	float:left;
 }
 #right_side{
-	float:left;
+	position:absolute;
+	top:0px;
+	left:801px;
 	height:671px;
-	width:300px;
 }
 #news_list{
 	overflow:auto;
