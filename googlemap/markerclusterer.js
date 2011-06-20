@@ -1054,9 +1054,12 @@ ClusterIcon.prototype.triggerClusterClick = function() {
   // Trigger the clusterclick event.
   google.maps.event.trigger(markerClusterer, 'clusterclick', this.cluster_);
 
-  if (markerClusterer.isZoomOnClick() & this.cluster_.getMarkers().length > 1) {
+  if (markerClusterer.isZoomOnClick()) {
     // Zoom into the cluster.
-    this.map_.fitBounds(this.cluster_.getBounds());
+	if (!this.cluster_.getBounds().getNorthEast().equals(this.cluster_.getBounds().getSouthWest()))
+	{
+		this.map_.fitBounds(this.cluster_.getBounds());
+	}
   }
 };
 
