@@ -104,7 +104,10 @@ function displayPopup(response) {
 		}
 		htmlContent += '<h3><a href="' + row[2] + '" class="external_link">' + row[0] + '</a></h3><p>' + row[3] + '</div>';
 	}
-	$("#news_list").html(htmlContent);
-	addPopup();
+
+	$("#news_list").fadeOut(300, function(){
+		$(this).html(htmlContent).fadeIn(500);
+		addPopup();
+	});
 	
 }
