@@ -1055,7 +1055,7 @@ ClusterIcon.prototype.triggerClusterClick = function() {
   google.maps.event.trigger(markerClusterer, 'clusterclick', this.cluster_);
 
   if (markerClusterer.isZoomOnClick()) {
-    // Zoom into the cluster.
+    // Zoom into the cluster. ** CONDITION ADDED BY NEWSBOARD **
 	if (!this.cluster_.getBounds().getNorthEast().equals(this.cluster_.getBounds().getSouthWest()))
 	{
 		this.map_.fitBounds(this.cluster_.getBounds());
@@ -1063,7 +1063,27 @@ ClusterIcon.prototype.triggerClusterClick = function() {
   }
 };
 
+/** **** Added by NewsBoard ****
+ * Triggers the clustermouseover event
+ */
+ClusterIcon.prototype.triggerClusterMouseOver = function() {
+  var markerClusterer = this.cluster_.getMarkerClusterer();
 
+  // Trigger the clusterclick event.
+  google.maps.event.trigger(markerClusterer, 'clustermouseover', this.cluster_);
+
+};
+
+/** **** Added by NewsBoard ****
+ * Triggers the clustermouseout event
+ */
+ClusterIcon.prototype.triggerClusterMouseOut = function() {
+  var markerClusterer = this.cluster_.getMarkerClusterer();
+
+  // Trigger the clusterclick event.
+  google.maps.event.trigger(markerClusterer, 'clustermouseout', this.cluster_);
+
+};
 
 
 /**
@@ -1084,6 +1104,12 @@ ClusterIcon.prototype.onAdd = function() {
   var that = this;
   google.maps.event.addDomListener(this.div_, 'click', function() {
     that.triggerClusterClick();
+  });
+  google.maps.event.addDomListener(this.div_, 'mouseover', function() {
+    that.triggerClusterMouseOver();
+  });
+  google.maps.event.addDomListener(this.div_, 'mouseout', function() {
+    that.triggerClusterMouseOut();
   });
 };
 

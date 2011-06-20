@@ -33,6 +33,8 @@ function setData() {
 
 }
 
+var newsDelay = 300;
+var showTimer = null;
 // use the data collected via SQL and place them on the map
 function getData(response) {
 	var numRows = response.getDataTable().getNumberOfRows();
@@ -53,11 +55,19 @@ function getData(response) {
 		minimumClusterSize:1
 	}
 	var MarkerCluster = new MarkerClusterer(map, listMarkers, optionsCluster);
-	google.maps.event.addListener(MarkerCluster, "clusterclick", click_cluster);
+	google.maps.event.addListener(MarkerCluster, "clusterclick", getNewsCluster);
+	google.maps.event.addListener(MarkerCluster, "clustermouseover", function(cluster){
+		showTimer = setTimeout(function(){
+			getNewsCluster(cluster);
+		}, newsDelay);
+	});
+	google.maps.event.addListener(MarkerCluster, "clustermouseout", function(cluster){
+		if (showTimer) clearTimeout(showTimer);
+	});
 }
 
 
-function click_cluster(cluster)
+function getNewsCluster(cluster)
 {
 	var bounds = cluster.getBounds();
 	var max_lat = bounds.getNorthEast().lat();
