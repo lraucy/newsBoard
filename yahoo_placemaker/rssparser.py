@@ -15,6 +15,7 @@ import re
 from feedparser import parse
 from placemaker import Placemaker
 from geoplanet import Geoplanet
+from textextraction import TermExtractor
 
 class FeedPlace(object):
 
@@ -127,17 +128,20 @@ class RssParser(object):
         for i in range(len(self.flux['entries'])):
             feed = Feed()
             p = Placemaker()
+            extractor = TermExtractor()
             feed.title = self.flux.entries[i].title.encode('utf-8', 'ignore')
             feed.date = self.flux.entries[i].date.encode('utf-8', 'ignore')
             feed.number = self.flux.entries[i].guid.split('=')[1]
             feed.description = reduce(lambda x, y: x + y, filter(lambda x: re.match(r'[<>]', x) == None, map(lambda x: re.sub(r'</?(b|font size="-1")>', '', x),re.findall(r'<font size="-1">(.*?)</font>', self.flux.entries[i].description))), '')
             feed.description = feed.description.encode('utf-8', 'ignore')
+            self.subjects = extractor.extraction(feed.description)
             placemaker_place = feed.description + feed.title
             p.find_places(placemaker_place)
             feed.place = FeedPlace(p.places)
             feed.link = re.sub(r'http:(.*?)url=', '', self.flux.entries[i].link)
             feed.link = feed.link.encode('utf-8', 'ignore')
             temp = re.findall(r'src="([^"]*)"', self.flux.entries[i].description.encode('utf-8', 'ignore'))
+
             if len(temp) != 0:
                 feed.picture = temp[0]
             else:

@@ -35,7 +35,7 @@ auth = clientlogindata.ClientLoginData()
 token = ClientLogin().authorize(auth.login, auth.password)
 ft_client = fusiontables.ftclient.ClientLoginFTClient(token)
 
-ft_client.query(SQL().deleteAllRows(tableid))
+#ft_client.query(SQL().deleteAllRows(tableid))
 
 for url in URL_SOURCE:
     flux_rss = RssParser(url)
@@ -60,7 +60,7 @@ for url in URL_SOURCE:
                 'Picture': str(feed.picture),
                 'Continent': str(feed.place.continent).replace("'","\\'"),
                 'Country': str(feed.place.country).replace("'","\\'"),
-                'Description': feed.description.decode('utf-8', 'ignore').replace("'","\\'"),
+                'Description': feed.description.decode('utf-8').replace("'","\\'"),
                 })).split("\n")[1])
             print rowid
 
