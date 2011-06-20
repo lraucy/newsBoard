@@ -24,7 +24,7 @@ function initialize()
 	
 	boxText = document.createElement("div");
 	boxText.style.cssText = "border: 1px solid black; margin-top: 8px; background: #f5f5f5; padding: 5px;";
-
+	google.maps.event.addListener(map, 'zoom_changed', function(event){if(lastWindow) lastWindow.close();});
 }
 
 
@@ -49,9 +49,28 @@ function getData(response) {
 		}
 		placePoint(row);
 	}
-	var MarkerCluster = new MarkerClusterer(map, listMarkers);
+	var optionsCluster = {
+		zoomOnClick: false,
+		maxZoom: 8
+	}
+	var MarkerCluster = new MarkerClusterer(map, listMarkers, optionsCluster);
+	google.maps.event.addListener(MarkerCluster, "clusterclick", click_cluster);
 }
 
+
+function click_cluster(cluster)
+{
+	if (lastWindow) lastWindow.close();
+	var bounds = cluster.getBounds();
+	var max_lat = bounds.getNorthEast().lat();
+	var max_lng = bounds.getNorthEast().lng();
+	var min_lat = bounds.getSouthWest().lat();
+	var min_lng = bounds.getSouthWest().lng();
+	// query do not use geographic features of Fusion Tables because it needs geocoding... and we wannot geocode from python script.
+	// so we use this sort of "hack"
+	var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Title, Date, url, Description, Picture, Latitude, Longitude FROM 1019598 WHERE Latitude >= " + (min_lat - 0.01) + " AND Latitude <= " + (max_lat + 0.01) + " AND Longitude >= " + (min_lng - 0.01) + " AND Longitude <= " + (max_lng + 0.01)));
+	query.send(displayPopup);
+}
 
 
 // place a news on the map
@@ -94,11 +113,12 @@ function displayPopup(response) {
 		content: boxText,
 		disableAutoPan: false,
 		maxWidth: 0,
-		pixelOffset: new google.maps.Size(-140, 0),
+		pixelOffset: new google.maps.Size(0, -140),
 		zIndex: null,
 		boxStyle: {
 			opacity: 0.90,
-			width: "280px"
+			width: "280px",
+			height: "100px"
 		},
 		closeBoxMargin: "10px 2px 2px 2px",
 		closeBoxURL: "http://www.google.com/intl/en_us/mapfiles/close.gif",
