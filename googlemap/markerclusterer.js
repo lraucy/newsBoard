@@ -138,6 +138,7 @@ function MarkerClusterer(map, opt_markers, opt_options) {
     this.zoomOnClick_ = options['zoomOnClick'];
   }
 
+
   /**
    * @type {boolean}
    * @private
@@ -297,6 +298,7 @@ MarkerClusterer.prototype.getStyles = function() {
 MarkerClusterer.prototype.isZoomOnClick = function() {
   return this.zoomOnClick_;
 };
+
 
 /**
  * Whether average center is set.
@@ -1052,11 +1054,13 @@ ClusterIcon.prototype.triggerClusterClick = function() {
   // Trigger the clusterclick event.
   google.maps.event.trigger(markerClusterer, 'clusterclick', this.cluster_);
 
-  if (markerClusterer.isZoomOnClick()) {
+  if (markerClusterer.isZoomOnClick() & this.cluster_.getMarkers().length > 1) {
     // Zoom into the cluster.
     this.map_.fitBounds(this.cluster_.getBounds());
   }
 };
+
+
 
 
 /**
