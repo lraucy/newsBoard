@@ -6,6 +6,8 @@ var listMarkers = [];
 
 var countryList = {};
 
+var lastCluster;
+
 google.load('visualization', '1');
 
 function initialize()
@@ -33,7 +35,7 @@ function setData() {
 
 }
 
-var newsDelay = 300;
+var newsDelay = 500;
 var showTimer = null;
 // use the data collected via SQL and place them on the map
 function getData(response) {
@@ -69,15 +71,20 @@ function getData(response) {
 
 function getNewsCluster(cluster)
 {
-	var bounds = cluster.getBounds();
-	var max_lat = bounds.getNorthEast().lat();
-	var max_lng = bounds.getNorthEast().lng();
-	var min_lat = bounds.getSouthWest().lat();
-	var min_lng = bounds.getSouthWest().lng();
-	// query do not use geographic features of Fusion Tables because it needs geocoding... and we wannot geocode from python script.
-	// so we use this sort of "hack"
-	var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Title, Date, url, Description, Picture, Latitude, Longitude FROM 1019598 WHERE Latitude >= " + (min_lat - 0.01) + " AND Latitude <= " + (max_lat + 0.01) + " AND Longitude >= " + (min_lng - 0.01) + " AND Longitude <= " + (max_lng + 0.01)));
-	query.send(displayPopup);
+	if(lastCluster != cluster)
+	{
+		lastCluster = cluster;
+		if (showTimer) clearTimeout(showTimer);
+		var bounds = cluster.getBounds();
+		var max_lat = bounds.getNorthEast().lat();
+		var max_lng = bounds.getNorthEast().lng();
+		var min_lat = bounds.getSouthWest().lat();
+		var min_lng = bounds.getSouthWest().lng();
+		// query do not use geographic features of Fusion Tables because it needs geocoding... and we wannot geocode from python script.
+		// so we use this sort of "hack"
+		var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Title, Date, url, Description, Picture, Latitude, Longitude FROM 1019598 WHERE Latitude >= " + (min_lat - 0.01) + " AND Latitude <= " + (max_lat + 0.01) + " AND Longitude >= " + (min_lng - 0.01) + " AND Longitude <= " + (max_lng + 0.01)));
+		query.send(displayPopup);
+	}
 }
 
 
@@ -115,9 +122,9 @@ function displayPopup(response) {
 		htmlContent += '<h3><a href="' + row[2] + '" class="external_link">' + row[0] + '</a></h3><p>' + row[3] + '</div>';
 	}
 
-	$("#news_list").fadeOut(300, function(){
-		$(this).html(htmlContent).fadeIn(500);
-		addPopup();
-	});
+		$("#news_list").fadeOut(100, function(){
+			$(this).html(htmlContent).fadeIn(300);
+			addPopup();
+		});
 	
 }
