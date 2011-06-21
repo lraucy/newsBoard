@@ -45,6 +45,7 @@ h2{
 #news_list{
 	overflow:auto;
 	height:671px;
+	padding:10px;
 }
 #map_canvas{
 	width: 800px;
