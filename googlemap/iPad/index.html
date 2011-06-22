@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+
+		
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+		<!-- for iPad -->
+		<meta name="viewport" content="width=768px;, minimum-scale=1.0, maximum-scale=1.0" />
+
+		<title>NewsBoard: What's where? Be there.</title>
+		<link href="style.css" type="text/css" rel="stylesheet" media="screen">
+		<link href="colorbox.css" type="text/css" rel="stylesheet" media="screen">
+
+
+		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+		<script type="text/javascript" src="https://www.google.com/jsapi?key=ABQIAAAAo_sV4ytIn5IrFe8MhmzG2RQ8RhOhhNhW6jrFcuJnspF5pmR9bBS6JJW_6pxZg3xtkcolbtpMzTcqBw"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="jquery.colorbox-min.js"></script>
+		<script type="text/javascript" src="infobox_packed.js"></script>
+		<script type="text/javascript" src="iscroll.js"></script>
+		<script type="text/javascript" src="markerclusterer.js"></script>
+		<script type="text/javascript" src="newsboard.js"></script>
+		<script type="text/javascript" src="popup.js"></script>
+
+
+	</head>
+	<body onload="initialize()">
+		<div id="container">
+
+
+			<div id="content">
+				<div id="left_side">
+					<div id="header"></div>
+					<div id="map_canvas"></div>
+				</div>
+				<div id="right_side">
+					<div id="news_list"></div>
+				</div>
+				<footer>
+Newsboard. First Project 2011. <a href="http://www.fondation-telecom.org">Fondation Telecom</a>
+				</footer>
+			</div><!-- end content -->
+
+		</div>
+	</body>
+</html>
