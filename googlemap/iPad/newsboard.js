@@ -8,6 +8,8 @@ var countryList = {};
 
 var lastCluster;
 
+var lastOrientation;
+
 google.load('visualization', '1');
 
 function initialize()
@@ -26,12 +28,29 @@ function initialize()
 	boxText = document.createElement("div");
 	boxText.style.cssText = "border: 1px solid black; margin-top: 8px; background: #f5f5f5; padding: 5px;";
 
-
+	lastOrientation = orientation;
 	window.onorientationchange = function () {
-		if (orientation == 90 || orientation == -90)
+		if (lastOrientation - orientation == 90 || lastOrientation - orientation == -90 || lastOrientation - orientation == 270 || lastOrientation - orientation == -270)
 		{
-			$('tr >')
+			if (orientation == 90 || orientation == -90)
+			{
+				$("#news_list").unwrap();
+				$("#news_list").unwrap();
+				$("#news_list").unwrap();
+				$(".news_in_list").unwrap();
+			}
+			else if (orientation == 0 || orientation == 180)
+			{
+				$("#news_list").wrap("<table><tr></tr></table>");
+				$(".news_in_list").wrap("<td />");
+			}
 		}
+		lastOrientation = orientation;
+	}
+
+	if(orientation == 180 || orientation == 0)
+	{
+		$("#news_list").wrap("<table><tr></tr></table>");
 	}
 }
 

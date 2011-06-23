@@ -40,11 +40,13 @@ h2{
 	position:absolute;
 	top:0px;
 	left:769px;
+	width:256px;
 	height:671px;
 }
 #news_list{
 	overflow:auto;
 	height:671px;
+	width:256px;
 	padding:10px;
 }
 #map_canvas{
@@ -70,13 +72,12 @@ footer{
 		position:absolute;
 		top:671px;
 		left:0px;
+		width:766px;
 		height:230px;
 	}
 	#news_list{
 		height:230px;
-		overflow:hidden;
-		overflow-y:hidden;
-		overflow-x:scroll;
+		width:766px;
 		float:left;
 	}
 	.news_in_list{
