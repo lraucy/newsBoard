@@ -25,7 +25,7 @@ h2{
 #header{
 	text-indent:-9999px;
 	display:block;
-	width:768px;
+	width:764px;
 	height:71px;
 	background:url(logo.png) no-repeat 0 0;
 }
@@ -33,24 +33,24 @@ h2{
 	width:95%;
 }
 #left_side{
-	width:766px;
+	width:764px;
 	border-right:1px #ddd solid;
 }
 #right_side{
 	position:absolute;
 	top:0px;
 	left:769px;
-	width:256px;
+	width:234px;
 	height:671px;
 }
 #news_list{
 	overflow:auto;
 	height:671px;
-	width:256px;
+	width:234px;
 	padding:10px;
 }
 #map_canvas{
-	width: 766px;
+	width: 764px;
 	height:600px;
 }
 footer{
@@ -72,18 +72,18 @@ footer{
 		position:absolute;
 		top:671px;
 		left:0px;
-		width:766px;
+		width:738px;
 		height:230px;
 	}
 	#news_list{
-		height:230px;
-		width:766px;
+		height:226px;
+		width:738px;
 		float:left;
 	}
 	.news_in_list{
 		float:left;
 		width:248px;
-		height:230px;
+		height:226px;
 	}
 	footer{
 		width:768px;
