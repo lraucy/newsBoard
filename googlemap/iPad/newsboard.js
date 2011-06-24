@@ -22,6 +22,7 @@ function initialize()
 	};
 	map = new google.maps.Map(document.getElementById("map_canvas"), my_map_option);
 	var mc = new MarkerClusterer(map);
+	styleMap(map);
 
 	setData();
 
@@ -178,3 +179,18 @@ function touchScroll(id){
 		this.scrollLeft=scrollStartPosX-event.touches[0].pageX;
 	},false);
 }
+
+function styleMap(map)
+{
+	var stylez = [ { featureType: "road", elementType: "all", stylers: [ { visibility: "off" } ] } ];
+	var styledMapOptions = 
+	{
+		name: "newsboard"
+	}
+	var newsboardStyle = new google.maps.StyledMapType(stylez, styledMapOptions);
+	map.mapTypes.set("newsboard", newsboardStyle);
+	map.setMapTypeId("newsboard");
+
+}
+
+
