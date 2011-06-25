@@ -66,6 +66,15 @@ footer{
 #popup {
 	display:none;
 }
+#news_list .waiter{
+	background-image:url('images/ajax-loader.gif');
+	background-position:center;
+	background-repeat:no-repeat;
+	margin:0px;
+	padding:0px;
+	height:651px;
+	width:214px;
+}
 
 @media only screen and (orientation:portrait){
 	#right_side{
@@ -79,14 +88,22 @@ footer{
 		height:226px;
 		width:738px;
 		float:left;
+		padding-top:5px;
+		padding-bottom:5px;
 	}
 	.news_in_list{
 		float:left;
 		width:248px;
-		height:226px;
+		height:216px;
 	}
 	footer{
 		width:768px;
 		top:920px;
+	}
+	#news_list .waiter{
+		margin:0px;
+		padding:0px;
+		height:216px;
+		width:718px;
 	}
 }
