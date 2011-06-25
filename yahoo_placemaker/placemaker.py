@@ -1,6 +1,3 @@
-#!/usr/bin/python2
-# -*-coding:Utf-8 -*
-
 """
 Python wrapper for the Yahoo Placemaker API.
 
@@ -99,9 +96,6 @@ class Placemaker(object):
                        'documentTitle': documentTitle,
                        'autoDisambiguate': autoDisambiguate,
                        'focusWoeid': focusWoeid, }
-
-        self.values[('documentURL' if input.startswith('http://')
-                     else 'documentContent')] = input
 
         self.data = urllib.urlencode(self.values)
         self.req = urllib2.Request(API_URL, self.data)

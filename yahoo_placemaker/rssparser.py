@@ -1,5 +1,5 @@
-#!/usr/bin/python2
-# -*-coding:Utf-8 -*
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 # When using ElementTree to parse the XML returned by the API,
 # each tag is prefixed by the schema URL. We need to use this
@@ -12,11 +12,11 @@ API_URL = 'http://wherein.yahooapis.com/v1/document'
 
 
 import re
+import sys
 from feedparser import parse
 from placemaker import Placemaker
 from geoplanet import Geoplanet
 from textextraction import TermExtractor
-from distance import points2distance
 
 class FeedPlace(object):
 
@@ -30,8 +30,6 @@ class FeedPlace(object):
         if len(self.places) != 0:
             max_weight = 0
             for place in self.places:
-                print place.name
-                print ' longitude : ' , place.centroid.longitude, ' latitude : ', place.centroid.latitude
                 if place.weight > max_weight:
                     max_weight = place.weight
                     for place in self.places:
@@ -43,7 +41,7 @@ class FeedPlace(object):
             # -> Le lieu le plus probable devient ce lieu descendant
             if self.place.placetype in ['Continent', 'Supername', 'Colloquial']:
                 children = geo.find_children_by_woeid(self.place.woeid, 200)
-                children = geo.find_descendants_by_woeid(self.place.woeid)
+                #children = geo.find_descendants_by_woeid(self.place.woeid)
                 for child in children:
                     for place in self.places:
                         if int(child.woeid) == int(place.woeid):
@@ -60,7 +58,6 @@ class FeedPlace(object):
                     try :
                         if int(country_related[0].woeid) == int(self.place.woeid):
                             self.place = place
-                            #print place
                     except IndexError:
                         pass
 
@@ -105,20 +102,16 @@ class RssParser(object):
         for i in range(len(self.flux['entries'])):
             feed = Feed(language=self.language)
             p = Placemaker(language=self.language)
-            #extractor = TermExtractor()
             feed.title = self.flux.entries[i].title.encode('utf-8', 'ignore')
             feed.date = self.flux.entries[i].date.encode('utf-8', 'ignore')
             feed.number = self.flux.entries[i].guid.split('=')[1]
-            feed.description = reduce(lambda x, y: x + y, filter(lambda x: re.match(r'[<>]', x) == None, map(lambda x: re.sub(r'</?(b|font size="-1")>', '', x),re.findall(r'<font size="-1">(.*?)</font>', self.flux.entries[i].description))), '')
-            feed.description = feed.description.encode('utf-8', 'ignore')
-            #self.subjects = extractor.extraction(feed.description)
+            feed.description = clear_text(self.flux.entries[i].description)
             placemaker_place = feed.description + feed.title
             p.find_places(placemaker_place)
             feed.place = FeedPlace(p.places, language=self.language)
             feed.link = re.sub(r'http:(.*?)url=', '', self.flux.entries[i].link)
             feed.link = feed.link.encode('utf-8', 'ignore')
             temp = re.findall(r'src="([^"]*)"', self.flux.entries[i].description.encode('utf-8', 'ignore'))
-
             if len(temp) != 0:
                 feed.picture = temp[0]
             else:
@@ -145,3 +138,8 @@ class RssParser(object):
                 print link
             print 'NUMBER : %s' % feed.number
             print
+
+def clear_text(text):
+    temp =  reduce(lambda x, y: x + y, filter(lambda x: re.match(r'[<>]', x) == None, map(lambda x: re.sub(r'</?(b|font size="-1")>', '', x),re.findall(r'<font size="-1">(.*?)</font>', text))), '')
+    return temp.encode('utf-8')
+
