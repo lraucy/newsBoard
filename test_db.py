@@ -1,3 +1,4 @@
+#!/usr/bin/python2
 from fusiontables.authorization.clientlogin import ClientLogin
 from fusiontables.sql.sqlbuilder import SQL
 import fusiontables.ftclient
@@ -57,28 +58,23 @@ for url in URL_SOURCE_FRENCH:
     print url
     feeds = flux_rss.process()
     for feed in feeds:
-        try:
-            print "\n"
-            print feed.description
-            if ft_client.query(SQL().select(tableid, None,"Title='" + feed.title.replace("'","\\'") + "'")).count('\n')==1 and (feed.place.latitude!=0 or feed.place.longitude!=0):
-                rowid = int(ft_client.query(SQL().insert(tableid, {'Title':
-                feed.title.replace("'","\\'"),
-                'Location': str(feed.place.place).replace("'","\\'"),
-                'Date': str(feed.date),
-                'Number': str(feed.number),
-                'Latitude': str(feed.place.latitude),
-                'Longitude': str(feed.place.longitude),
-                'url': str(feed.link),
-                'Picture': str(feed.picture),
-                'Language': str(feed.language),
-                'Description': feed.description.decode('utf-8').replace("'","\\'"),
-                })).split("\n")[1])
-                print rowid
-        except :
-            print
-            print "///////////////////////////////////////////////////////"
-            print str(feed.description)
-            print "////////////////////////////////////////////////////////"
+        print "\n"
+        print feed.description.decode('utf-8').replace("'","\\'")
+
+        if ft_client.query(SQL().select(tableid, None,"Title='" + feed.title.replace("'","\\'") + "'")).count('\n')==1 and (feed.place.latitude!=0 or feed.place.longitude!=0):
+            rowid = int(ft_client.query(SQL().insert(tableid, {'Title':
+            feed.title.replace("'","\\'"),
+            'Location': str(feed.place.place).replace("'","\\'"),
+            'Date': str(feed.date),
+            'Number': str(feed.number),
+            'Latitude': str(feed.place.latitude),
+            'Longitude': str(feed.place.longitude),
+            'url': str(feed.link),
+            'Picture': str(feed.picture),
+            'Language': str(feed.language),
+            'Description': feed.description.replace("'","\\'"),
+            })).split("\n")[1])
+            print rowid
 
 
 

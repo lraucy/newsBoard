@@ -163,8 +163,7 @@ class SQL:
       elif type(value).__name__=='float':
         stringValues = '%s%f' % (stringValues, value)
       else:
-        stringValues = "%s'%s'" % (stringValues,
-                                   value)
+        stringValues = "%s'%s'" % (stringValues, value)
       if count < len(values): stringValues = "%s," % (stringValues)
       count += 1
 
