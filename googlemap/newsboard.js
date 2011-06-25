@@ -171,6 +171,7 @@ function setLanguage(elt)
 	}
 	mc.clearMarkers();
 	setData();
+	$("#news_list").html("");
 
 	$("#language_chooser a .lang").unwrap();
 	$("#language_chooser .lang").each(function(){
