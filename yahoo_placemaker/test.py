@@ -3,6 +3,10 @@
 
 from rssparser import RssParser
 
+start = [67.6789,  33.9305]
+end = [2.03453, 47.0822]
+
+
 #URL of the source RSS flux
 URL_SOURCE = {'http://news.google.fr/news?pz=1&cf=all&ned=fr&hl=fr&topic=w&output=rss',
               'http://news.google.fr/news?pz=1&cf=all&ned=fr&hl=fr&topic=n&output=rss',
@@ -29,10 +33,10 @@ URL_SOURCE = {'http://news.google.fr/news?pz=1&cf=all&ned=fr&hl=fr&topic=w&outpu
               # 'http://news.google.com/news?ned=uk&topic=n&output=rss',
         }
 
-for url in URL_SOURCE:
-    flux_rss_english = RssParser(url,'fr-FR')
-    feeds_english = flux_rss_english.process()
-    #flux_rss_english.print_feeds()
+# for url in URL_SOURCE:
+#     flux_rss = RssParser(url,'fr-FR')
+#     feeds = flux_rss.process()
+#     #flux_rss.print_feeds()
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
 
 

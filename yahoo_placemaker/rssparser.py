@@ -16,6 +16,7 @@ from feedparser import parse
 from placemaker import Placemaker
 from geoplanet import Geoplanet
 from textextraction import TermExtractor
+from distance import points2distance
 
 class FeedPlace(object):
 
@@ -29,6 +30,8 @@ class FeedPlace(object):
         if len(self.places) != 0:
             max_weight = 0
             for place in self.places:
+                print place.name
+                print ' longitude : ' , place.centroid.longitude, ' latitude : ', place.centroid.latitude
                 if place.weight > max_weight:
                     max_weight = place.weight
                     for place in self.places:
@@ -40,7 +43,7 @@ class FeedPlace(object):
             # -> Le lieu le plus probable devient ce lieu descendant
             if self.place.placetype in ['Continent', 'Supername', 'Colloquial']:
                 children = geo.find_children_by_woeid(self.place.woeid, 200)
-                #descendants = geo.find_descendants_by_woeid(self.place.woeid)
+                children = geo.find_descendants_by_woeid(self.place.woeid)
                 for child in children:
                     for place in self.places:
                         if int(child.woeid) == int(place.woeid):
@@ -55,8 +58,9 @@ class FeedPlace(object):
                 if place.placetype in ['Town', 'Local Administrative Area', 'County', 'State', 'Province', 'Prefecture', 'Region', 'Federal District', 'Department', 'District', 'Commune', 'Municipality', 'Ward']:
                     country_related = geo.find_places_by_name(place.name[-2:])
                     try :
-                        if country_related[0].woeid == self.place.woeid:
+                        if int(country_related[0].woeid) == int(self.place.woeid):
                             self.place = place
+                            #print place
                     except IndexError:
                         pass
 
@@ -68,34 +72,9 @@ class FeedPlace(object):
             self.woeid = self.place.woeid;
             self.placetype = self.place.placetype
 
-            # On trouve le continent et le pays associé au lieu de l'article
-            if self.place.name in ['Africa', 'Asia', 'North America', 'South America', 'Europe', 'Antarctica', 'Oceania']:
-                self.continent = self.place
-                self.country = 'None'
-            else:
-                self.continent = 'None'
-                self.country = 'None'
-
-                continents = geo.find_belongtos_by_woeid(self.place.woeid)
-                for continent in continents:
-                    if continent.name in ['Africa', 'Asia', 'North America', 'South America', 'Europe', 'Antarctica', 'Oceania']:
-                        self.continent = continent;
-                        break
-
-                if self.place.placetype in ['Town', 'Airport', 'Drainage', 'Local Administrative Area', 'County', 'State', 'Province', 'Prefecture', 'Region', 'Federal District', 'Department', 'District', 'Commune', 'Municipality', 'Ward', 'Suburb', 'POI']:
-                    countries = geo.find_belongtos_by_woeid(self.place.woeid)
-                    for country in countries:
-                        if country.placetype == 'Country':
-                            self.country = country;
-                            break
-                else:
-                    self.country = self.place;
-
         else:
             self.place = 'World'
             self.placetype = 'None'
-            self.continent = 'Earth'
-            self.country = 'None'
             self.latitude = 0
             self.longitude = 0
             self.woeid = 0
@@ -156,8 +135,6 @@ class RssParser(object):
             print 'DATE : %s' % feed.date
             print 'PLACES : %s' % feed.place.places
             print 'PLACE TYPE : %s' % feed.place.placetype
-            print 'CONTINENT : %s' % feed.place.continent
-            print 'COUNTRY : %s' % feed.place.country
             print 'PLACE : %s' % feed.place.place
             print 'COORD : latitude = ' + str(feed.place.latitude) + ' longitude = ' + str(feed.place.longitude)
             print 'WoeID : %s ' % feed.place.woeid
