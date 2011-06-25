@@ -84,6 +84,9 @@ function getNewsCluster(cluster)
 		// query do not use geographic features of Fusion Tables because it needs geocoding... and we wannot geocode from python script.
 		// so we use this sort of "hack"
 		var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Title, Date, url, Description, Picture, Latitude, Longitude FROM 1019598 WHERE Latitude >= " + (min_lat - 0.01) + " AND Latitude <= " + (max_lat + 0.01) + " AND Longitude >= " + (min_lng - 0.01) + " AND Longitude <= " + (max_lng + 0.01)));
+
+		// we put the loading image
+		$("#news_list").html('<div class="waiter"></div>');
 		query.send(displayPopup);
 	}
 }
@@ -123,10 +126,8 @@ function displayPopup(response) {
 		htmlContent += '<h3><a href="' + row[2] + '" class="external_link">' + row[0] + '</a></h3><p>' + row[3] + '</div>';
 	}
 
-		$("#news_list").fadeOut(100, function(){
-			$(this).html(htmlContent).fadeIn(300);
-			addPopup();
-		});
+	$("#news_list").html(htmlContent);
+	addPopup();
 	
 }
 

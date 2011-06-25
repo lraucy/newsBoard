@@ -47,6 +47,9 @@ h2{
 	height:671px;
 	padding:10px;
 }
+#news_list a{
+	color:#666666;
+}
 #map_canvas{
 	width: 800px;
 	height:600px;
@@ -60,4 +63,12 @@ h2{
 }
 #popup {
 	display:none;
+}
+
+#news_list .waiter{
+	background-image:url('images/ajax-loader.gif');
+	background-position:center;
+	background-repeat:no-repeat;
+	height:671px;
+	width:200px;
 }
