@@ -6,7 +6,10 @@ var listMarkers = [];
 
 var countryList = {};
 
+var mc; //marker cluster
 var lastCluster;
+
+var language = "en-US";
 
 google.load('visualization', '1');
 
@@ -19,7 +22,7 @@ function initialize()
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
 	map = new google.maps.Map(document.getElementById("map_canvas"), my_map_option);
-	var mc = new MarkerClusterer(map);
+	mc = createCluster();
 	styleMap(map);
 
 	setData();
@@ -31,9 +34,30 @@ function initialize()
 
 // get the data to place on the map
 function setData() {
-	var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Latitude, Longitude FROM 1019598"));
+	var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Latitude, Longitude FROM 1019598 WHERE Language='" + language + "'"));
 	query.send(getData);
 
+}
+
+function createCluster()
+{
+	var optionsCluster = {
+		zoomOnClick: true,
+		maxZoom: 30,
+		minimumClusterSize:1
+	}
+	var mc = new MarkerClusterer(map, [], optionsCluster);
+
+	google.maps.event.addListener(mc, "clusterclick", getNewsCluster);
+	google.maps.event.addListener(mc, "clustermouseover", function(cluster){
+		showTimer = setTimeout(function(){
+			getNewsCluster(cluster);
+		}, newsDelay);
+	});
+	google.maps.event.addListener(mc, "clustermouseout", function(cluster){
+		if (showTimer) clearTimeout(showTimer);
+	});
+	return mc;
 }
 
 var newsDelay = 500;
@@ -45,6 +69,7 @@ function getData(response) {
 	
 	var continents = [];
 	
+	listMarkers = [];
 	for (i = 0; i < numRows; i++) {
 		var row = [];
 		for (j = 0; j < numCols; j++) {
@@ -52,21 +77,9 @@ function getData(response) {
 		}
 		placePoint(row);
 	}
-	var optionsCluster = {
-		zoomOnClick: true,
-		maxZoom: 30,
-		minimumClusterSize:1
-	}
-	var MarkerCluster = new MarkerClusterer(map, listMarkers, optionsCluster);
-	google.maps.event.addListener(MarkerCluster, "clusterclick", getNewsCluster);
-	google.maps.event.addListener(MarkerCluster, "clustermouseover", function(cluster){
-		showTimer = setTimeout(function(){
-			getNewsCluster(cluster);
-		}, newsDelay);
-	});
-	google.maps.event.addListener(MarkerCluster, "clustermouseout", function(cluster){
-		if (showTimer) clearTimeout(showTimer);
-	});
+	mc.addMarkers(listMarkers);
+
+	
 }
 
 
@@ -83,7 +96,7 @@ function getNewsCluster(cluster)
 		var min_lng = bounds.getSouthWest().lng();
 		// query do not use geographic features of Fusion Tables because it needs geocoding... and we wannot geocode from python script.
 		// so we use this sort of "hack"
-		var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Title, Date, url, Description, Picture, Latitude, Longitude FROM 1019598 WHERE Latitude >= " + (min_lat - 0.01) + " AND Latitude <= " + (max_lat + 0.01) + " AND Longitude >= " + (min_lng - 0.01) + " AND Longitude <= " + (max_lng + 0.01)));
+		var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Title, Date, url, Description, Picture, Latitude, Longitude FROM 1019598 WHERE Latitude >= " + (min_lat - 0.01) + " AND Latitude <= " + (max_lat + 0.01) + " AND Longitude >= " + (min_lng - 0.01) + " AND Longitude <= " + (max_lng + 0.01) + " AND Language = '" + language + "'"));
 
 		// we put the loading image
 		$("#news_list").html('<div class="waiter"></div>');
@@ -104,7 +117,7 @@ function placePoint(row) {
 
 		// event when click, search all the news on this point
 		google.maps.event.addListener(marker, 'click', function(event) {
-			var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Title, Date, url, Description, Picture, Latitude, Longitude FROM 1019598 WHERE Latitude='" + row[0] + "' AND Longitude='" + row[1] + "'"));
+			var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Title, Date, url, Description, Picture, Latitude, Longitude FROM 1019598 WHERE Latitude='" + row[0] + "' AND Longitude='" + row[1] + "' AND Language = '" + language + "'"));
 			query.send(displayPopup);
 				});
 		listMarkers.push(marker);
@@ -142,5 +155,31 @@ function styleMap(map)
 	map.mapTypes.set("newsboard", newsboardStyle);
 	map.setMapTypeId("newsboard");
 
+}
+
+function setLanguage(elt)
+{
+	var lang = $(elt).children().html();
+	switch(lang)
+	{
+		case 'fr':
+			language= 'fr-FR';
+			break;
+		case 'en':
+			language='en-US';
+			break;	
+	}
+	mc.clearMarkers();
+	setData();
+
+	$("#language_chooser a .lang").unwrap();
+	$("#language_chooser .lang").each(function(){
+		if($(this).html() != lang)
+		{
+			$(this).wrap('<a href="#" onclick="setLanguage(this)"></a>');
+		}
+	});
+
+	return false;
 }
 

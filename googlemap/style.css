@@ -23,11 +23,15 @@ h2{
 	margin:0 auto;
 }
 #header{
-	text-indent:-9999px;
 	display:block;
 	width:800px;
 	height:71px;
 	background:url(logo.png) no-repeat 0 0;
+}
+#header #language_chooser{
+	float:right;
+	margin-top:50px;
+	padding-right:5px;
 }
 #content{
 	width:95%;
