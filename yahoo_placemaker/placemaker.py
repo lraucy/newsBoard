@@ -83,18 +83,25 @@ class PlacemakerPoint(object):
 
 class Placemaker(object):
 
-    def find_places(self, documentContent = 'None', documentType='text/plain', inputLanguage='en-US',
+    def __init__(self, language='en-US'):
+        self.language = language
+
+
+    def find_places(self, input, documentType='text/plain',
                     outputType='xml', documentTitle='', autoDisambiguate='true',
                     focusWoeid=''):
 
         self.values = {'appid': API_KEY,
                        'documentType': documentType,
-                       'inputLanguage': inputLanguage,
-                       'documentContent': documentContent,
+                       'inputLanguage': self.language,
+                       'documentContent': input,
                        'outputType': outputType,
                        'documentTitle': documentTitle,
                        'autoDisambiguate': autoDisambiguate,
                        'focusWoeid': focusWoeid, }
+
+        self.values[('documentURL' if input.startswith('http://')
+                     else 'documentContent')] = input
 
         self.data = urllib.urlencode(self.values)
         self.req = urllib2.Request(API_URL, self.data)

@@ -19,10 +19,10 @@ from textextraction import TermExtractor
 
 class FeedPlace(object):
 
-    def __init__(self, placemakerplace):
-
+    def __init__(self, placemakerplace, language='en-US'):
+        self.language = language
         self.places = placemakerplace
-        geo = Geoplanet()
+        geo = Geoplanet(self.language)
 
         # On définit le lieu le plus probable de la
         # news celui qui a le plus de poids dans le feed
@@ -53,14 +53,10 @@ class FeedPlace(object):
             # -> Le lieu le plus probable devient cette ville
             for place in self.places:
                 if place.placetype in ['Town', 'Local Administrative Area', 'County', 'State', 'Province', 'Prefecture', 'Region', 'Federal District', 'Department', 'District', 'Commune', 'Municipality', 'Ward']:
-#                    print place.placetype, place.name, '       ', place.name[-2:]
                     country_related = geo.find_places_by_name(place.name[-2:])
                     try :
                         if country_related[0].woeid == self.place.woeid:
                             self.place = place
-                        else:
-                            if str(country_related[0].name) == str(self.place.name):
-                                self.place = place
                     except IndexError:
                         pass
 
@@ -108,7 +104,7 @@ class FeedPlace(object):
 
 class Feed(object):
 
-    def __init__(self, title='None', date='None', place='None', description='None', link='None', picture='None', other_links='None', number='None'):
+    def __init__(self, title='None', date='None', place='None', description='None', link='None', picture='None', other_links='None', number='None', language='None'):
         self.title = title
         self.date = date
         self.place = place
@@ -117,27 +113,29 @@ class Feed(object):
         self.picture = picture
         self.other_links = other_links
         self.number = number
+        self.language = language
 
 class RssParser(object):
 
-    def __init__(self, url):
+    def __init__(self, url, language):
+        self.language = language
         self.flux = parse(url)
         self.list_feeds = []
 
     def process(self):
         for i in range(len(self.flux['entries'])):
-            feed = Feed()
-            p = Placemaker()
-            extractor = TermExtractor()
+            feed = Feed(language=self.language)
+            p = Placemaker(language=self.language)
+            #extractor = TermExtractor()
             feed.title = self.flux.entries[i].title.encode('utf-8', 'ignore')
             feed.date = self.flux.entries[i].date.encode('utf-8', 'ignore')
             feed.number = self.flux.entries[i].guid.split('=')[1]
             feed.description = reduce(lambda x, y: x + y, filter(lambda x: re.match(r'[<>]', x) == None, map(lambda x: re.sub(r'</?(b|font size="-1")>', '', x),re.findall(r'<font size="-1">(.*?)</font>', self.flux.entries[i].description))), '')
             feed.description = feed.description.encode('utf-8', 'ignore')
-            self.subjects = extractor.extraction(feed.description)
+            #self.subjects = extractor.extraction(feed.description)
             placemaker_place = feed.description + feed.title
             p.find_places(placemaker_place)
-            feed.place = FeedPlace(p.places)
+            feed.place = FeedPlace(p.places, language=self.language)
             feed.link = re.sub(r'http:(.*?)url=', '', self.flux.entries[i].link)
             feed.link = feed.link.encode('utf-8', 'ignore')
             temp = re.findall(r'src="([^"]*)"', self.flux.entries[i].description.encode('utf-8', 'ignore'))
@@ -152,6 +150,7 @@ class RssParser(object):
 
     def print_feeds(self):
         for feed in self.list_feeds:
+            print 'LANGUAGE : %s' % feed.language
             print 'TITLE : %s' % feed.title
             print 'DESCRIPTION : \n %s' % feed.description
             print 'DATE : %s' % feed.date
