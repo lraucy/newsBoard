@@ -39,21 +39,26 @@ class FeedPlace(object):
             for place in self.places:
                 if place.weight > max_weight:
                     max_weight = place.weight
-                    for place in self.places:
-                        if place.weight == max_weight:
-                            self.place = place
+            for place in self.places:
+                if place.weight == max_weight:
+                    self.place = place
+                    break
 
-            # Si la liste comporte des lieux trop éloignés les
-            # uns des autres, on élimine la news
-            max_dist = 0
-            place_temp = self.places[:]
-            while (len(place_temp) != 1):
-                for place in place_temp[1:]:
-                    az12, az21, dist = geod.inv(place_temp[0].centroid.longitude, place_temp[0].centroid.latitude, place.centroid.longitude, place.centroid.latitude)
-                    if dist > max_dist:
-                        max_dist = dist
-                place_temp.pop(0)
-            self.max_dist = int(max_dist / 1000)
+
+            # On cherche dans la liste si il n'y a pas un lieu
+            # de même poids que le lieu choisi comme étant le plus probable
+            # On regarde ensuite si ce lieu est très éloigné, si oui
+            # on élimine la news car pas assez d'info significative
+            max_dist = 2000
+            news_invalid = False
+            for place in self.places:
+                if place.woeid != self.place.woeid:
+                    if place.weight == self.place.weight:
+                        az12, az21, dist = geod.inv(self.place.centroid.longitude, self.place.centroid.latitude, place.centroid.longitude, place.centroid.latitude)
+                        dist = int(dist / 1000)
+                        if dist > max_dist:
+                            news_invalid = True
+
 
             # Si le lieu le plus probable est trop étendu, on essaie de trouver
             # dans la liste un lieu descendant de ce dernier
@@ -80,6 +85,20 @@ class FeedPlace(object):
                     except IndexError:
                         pass
 
+
+            # On cherche la distance maximale entre deux lieux dans la news
+            # Ca sert plus à grand chose
+            max_dist = 0
+            place_temp = self.places[:]
+            while (len(place_temp) != 1):
+                for place in place_temp[1:]:
+                    if place_temp[0].weight == place.weight:
+                        az12, az21, dist = geod.inv(place_temp[0].centroid.longitude, place_temp[0].centroid.latitude, place.centroid.longitude, place.centroid.latitude)
+                        if dist > max_dist:
+                            max_dist = dist
+                place_temp.pop(0)
+            self.max_dist = int(max_dist / 1000)
+
             # On remplit les champs du centroide
             self.latitude = self.place.centroid.latitude
             self.longitude = self.place.centroid.longitude
@@ -88,11 +107,11 @@ class FeedPlace(object):
             self.woeid = self.place.woeid;
             self.placetype = self.place.placetype
 
-            if self.max_dist > 8000:
+            if news_invalid:
                 self.place = 'World'
                 self.placetype = 'None'
                 self.latitude = 0
-                self.max_dist = 100000
+                self.max_dist = 0
                 self.longitude = 0
                 self.woeid = 0
 
@@ -100,7 +119,7 @@ class FeedPlace(object):
             self.place = 'World'
             self.placetype = 'None'
             self.latitude = 0
-            self.max_dist = 100000
+            self.max_dist = 0
             self.longitude = 0
             self.woeid = 0
 

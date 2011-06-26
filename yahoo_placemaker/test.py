@@ -1,3 +1,6 @@
+#!/usr/bin/python2
+# -*- coding: utf-8 -*-
+
 from rssparser import RssParser
 
 URL_SOURCE_ENGLISH = {
@@ -15,7 +18,7 @@ URL_SOURCE_ENGLISH = {
     'http://news.google.co.uk/news?pz=1&cf=all&ned=us&hl=en&topic=t&output=rss',
     # Sport
     'http://news.google.co.uk/news?pz=1&cf=all&ned=us&hl=en&topic=s&output=rss',
-    # Santé
+    # Sante
     'http://news.google.co.uk/news?pz=1&cf=all&ned=us&hl=en&topic=m&output=rss',
     # Plus populaires
     'http://news.google.co.uk/news?pz=1&cf=all&ned=us&hl=en&topic=ir&output=rss',
@@ -506,14 +509,8 @@ URL_SOURCE_SPANISH = {
 
     }
 
-
-
-
-
-
-
-for url in URL_SOURCE_ENGLISH:
-    flux_rss = RssParser(url,'en-US')
+for url in URL_SOURCE_FRENCH:
+    flux_rss = RssParser(url,'fr-FR')
     feeds = flux_rss.process()
     flux_rss.print_feeds()
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
