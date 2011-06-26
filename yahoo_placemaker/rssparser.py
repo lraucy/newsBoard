@@ -11,23 +11,30 @@ API_KEY = '3hgLZdrV34E4RaJ_HZQPov0IGkLCJ6QWSv8PNXps8mVt4YeHXG1MXzlsQrJUqu47aNO7L
 API_URL = 'http://wherein.yahooapis.com/v1/document'
 
 
+
 import re
 import sys
 from feedparser import parse
 from placemaker import Placemaker
 from geoplanet import Geoplanet
 from textextraction import TermExtractor
+from pyproj import Geod
 
 class FeedPlace(object):
 
     def __init__(self, placemakerplace, language='en-US'):
+
         self.language = language
         self.places = placemakerplace
         geo = Geoplanet(self.language)
+        geod = Geod(ellps='WGS84')
 
-        # On définit le lieu le plus probable de la
-        # news celui qui a le plus de poids dans le feed
+        # Si la liste des lieux est vide, on élimine la
+        # news
         if len(self.places) != 0:
+
+            # On définit le lieu le plus probable de la
+            # news celui qui a le plus de poids dans le feed
             max_weight = 0
             for place in self.places:
                 if place.weight > max_weight:
@@ -35,6 +42,18 @@ class FeedPlace(object):
                     for place in self.places:
                         if place.weight == max_weight:
                             self.place = place
+
+            # Si la liste comporte des lieux trop éloignés les
+            # uns des autres, on élimine la news
+            max_dist = 0
+            place_temp = self.places[:]
+            while (len(place_temp) != 1):
+                for place in place_temp[1:]:
+                    az12, az21, dist = geod.inv(place_temp[0].centroid.longitude, place_temp[0].centroid.latitude, place.centroid.longitude, place.centroid.latitude)
+                    if dist > max_dist:
+                        max_dist = dist
+                place_temp.pop(0)
+            self.max_dist = int(max_dist / 1000)
 
             # Si le lieu le plus probable est trop étendu, on essaie de trouver
             # dans la liste un lieu descendant de ce dernier
@@ -69,18 +88,25 @@ class FeedPlace(object):
             self.woeid = self.place.woeid;
             self.placetype = self.place.placetype
 
+            if self.max_dist > 8000:
+                self.place = 'World'
+                self.placetype = 'None'
+                self.latitude = 0
+                self.max_dist = 100000
+                self.longitude = 0
+                self.woeid = 0
+
         else:
             self.place = 'World'
             self.placetype = 'None'
             self.latitude = 0
+            self.max_dist = 100000
             self.longitude = 0
             self.woeid = 0
 
-
-
 class Feed(object):
 
-    def __init__(self, title='None', date='None', place='None', description='None', link='None', picture='None', other_links='None', number='None', language='None'):
+    def __init__(self, title='None', date='None', place='None', description='None', link='None', picture='None', other_links='None', number='None', language='None', max_dist='None'):
         self.title = title
         self.date = date
         self.place = place
@@ -129,6 +155,7 @@ class RssParser(object):
             print 'PLACES : %s' % feed.place.places
             print 'PLACE TYPE : %s' % feed.place.placetype
             print 'PLACE : %s' % feed.place.place
+            print 'DISTANCE MAX : %s' % feed.place.max_dist
             print 'COORD : latitude = ' + str(feed.place.latitude) + ' longitude = ' + str(feed.place.longitude)
             print 'WoeID : %s ' % feed.place.woeid
             print 'MAIN LINK : %s' % feed.link
