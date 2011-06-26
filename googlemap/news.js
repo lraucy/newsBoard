@@ -78,9 +78,24 @@ function getNewsCluster(cluster)
 
 // function called to display the popup containing the different news on the point
 function displayPopup(response) {
-	var htmlContent = "";
 	var numRows = response.getDataTable().getNumberOfRows();
 	var numCols = response.getDataTable().getNumberOfColumns();
+
+	if (isiPad)
+	{
+		$("#news_list").html(contentPopupiPad(response, numRows, numCols));
+		addPopupiPad();
+	}
+	else
+	{
+		$("#news_list").html(contentPopupPC(response, numRows, numCols));
+		addPopup();
+	}
+	
+}
+
+function contentPopupPC(response, numRows, numCols) {
+	var htmlContent = "";
 
 	for (i = 0; i < numRows; i++) {
 		var row = [];
@@ -90,9 +105,8 @@ function displayPopup(response) {
 		}
 		htmlContent += '<h3><a href="' + row[2] + '" class="external_link">' + row[0] + '</a></h3><p>' + row[3] + '</div>';
 	}
+	return htmlContent;
 
-	$("#news_list").html(htmlContent);
-	addPopup();
-	
+
 }
 

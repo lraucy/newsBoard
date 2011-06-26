@@ -1,3 +1,8 @@
+// detection of the iPad??
+//
+var isiPad = navigator.userAgent.match(/iPad/i) != null;
+
+
 function setLanguage(elt)
 {
 	var lang = $(elt).children().html();
