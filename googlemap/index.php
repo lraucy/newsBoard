@@ -46,6 +46,14 @@
 
 	</head>
 	<body onload="initialize()">
+<?php
+if(preg_match("/iphone|android|symbian|mobile/i",
+	$_SERVER['HTTP_USER_AGENT'])) {
+?>
+<div>Attention ! Ce site n'est pas optimisé pour votre appareil, il est possible que vous ayez des difficultés à l'utiliser.</div>
+<?php
+		}
+?>
 		<div id="container">
 
 
