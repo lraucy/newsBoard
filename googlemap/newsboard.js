@@ -1,6 +1,10 @@
 var map;
 var countryCircle;
+//parameters
 var tableid = 1019598;
+var initialZoom = 2;
+var initialCenter = new google.maps.LatLng(48.861846, 2.35239);
+
 var boxText;
 var listMarkers = [];
 
@@ -17,8 +21,8 @@ function initialize()
 {
 	geocoder = new google.maps.Geocoder();
 	var my_map_option = {
-		zoom: 2,
-		center: new google.maps.LatLng(48.861846, 2.35239),
+		zoom: initialZoom,
+		center: initialCenter,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
 	map = new google.maps.Map(document.getElementById("map_canvas"), my_map_option);
@@ -181,6 +185,13 @@ function setLanguage(elt)
 		}
 	});
 
+	return false;
+}
+
+function dezoomMap()
+{
+	map.setZoom(initialZoom);
+	map.setCenter(initialCenter);
 	return false;
 }
 

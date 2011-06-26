@@ -35,6 +35,19 @@ h2{
 	float:right;
 	margin-top:50px;
 	padding-right:5px;
+	font-size:14px;
+	font-weight:bold;
+	color:#d50011;
+}
+#header #language_chooser a{
+	font-size:12px;
+	font-weight:normal;
+	text-decoration:none;
+}
+#header #language_chooser a:hover{
+	font-size:13px;
+	font-weight:bold;
+	text-decoration:underline;
 }
 #content{
 	width:95%;
