@@ -23,7 +23,6 @@ from pyproj import Geod
 class FeedPlace(object):
 
     def __init__(self, placemakerplace, language='en-US'):
-
         self.language = language
         self.places = placemakerplace
         geo = Geoplanet(self.language)
@@ -125,9 +124,10 @@ class FeedPlace(object):
 
 class Feed(object):
 
-    def __init__(self, title='None', date='None', place='None', description='None', link='None', picture='None', other_links='None', number='None', language='None', max_dist='None'):
+    def __init__(self, title='None', date='None', place='None', description='None', link='None', picture='None', other_links='None', number='None', language='None', max_dist='None', date_parsed='None'):
         self.title = title
         self.date = date
+        self.date_parsed = date_parsed
         self.place = place
         self.description = description
         self.link = link
@@ -149,6 +149,7 @@ class RssParser(object):
             p = Placemaker(language=self.language)
             feed.title = self.flux.entries[i].title.encode('utf-8', 'ignore')
             feed.date = self.flux.entries[i].date.encode('utf-8', 'ignore')
+            feed.date_parsed = self.flux.entries[i].updated_parsed
             feed.number = self.flux.entries[i].guid.split('=')[1]
             feed.description = clear_text(self.flux.entries[i].description)
             placemaker_place = feed.description + feed.title
@@ -171,6 +172,7 @@ class RssParser(object):
             print 'TITLE : %s' % feed.title
             print 'DESCRIPTION : \n %s' % feed.description
             print 'DATE : %s' % feed.date
+            print 'YEAR : %s' % feed.date_parsed.tm_year
             print 'PLACES : %s' % feed.place.places
             print 'PLACE TYPE : %s' % feed.place.placetype
             print 'PLACE : %s' % feed.place.place
