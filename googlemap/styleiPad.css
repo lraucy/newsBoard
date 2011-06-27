@@ -96,13 +96,14 @@ footer{
 		height:226px;
 		width:738px;
 		float:left;
+		padding:0px;
 		padding-top:5px;
-		padding-bottom:5px;
 	}
 	.news_in_list{
 		float:left;
 		width:248px;
-		height:216px;
+		height:220px;
+		overflow:hidden;
 	}
 	footer{
 		width:768px;
