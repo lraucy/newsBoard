@@ -2,8 +2,8 @@
 <html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-		<title>NewsBoard: What's where? Be there.</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<title>NewsBoard: Écoutez le bruit du monde</title>
 		<link href="style.css" type="text/css" rel="stylesheet" media="screen">
 		<link href="colorbox.css" type="text/css" rel="stylesheet" media="screen">
 
@@ -47,7 +47,7 @@
 	</head>
 	<body onload="initialize()">
 <?php
-if(preg_match("/iphone|android|symbian|mobile/i",
+if(preg_match("/iphone|android|symbian/i",
 	$_SERVER['HTTP_USER_AGENT'])) {
 ?>
 <div>Attention ! Ce site n'est pas optimisé pour votre appareil, il est possible que vous ayez des difficultés à l'utiliser.</div>
