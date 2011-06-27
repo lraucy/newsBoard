@@ -83,6 +83,9 @@ footer{
 	height:651px;
 	width:214px;
 }
+.news_in_list{
+	border-bottom:1px #ddd solid;
+}
 
 @media only screen and (orientation:portrait){
 	#right_side{
@@ -104,6 +107,11 @@ footer{
 		width:248px;
 		height:220px;
 		overflow:hidden;
+		padding-left:5px;
+		padding-right:5px;
+		border-bottom:none;
+		border-left:1px #ddd solid;
+		text-align:justify;
 	}
 	footer{
 		width:768px;
