@@ -1,9 +1,18 @@
+<?php 
+if(preg_match("/ipad/i", $_SERVER['HTTP_USER_AGENT']))
+{
+	header('Content-type: text/html; charset=ISO-8859-1');
+	$title = "NewsBoard: &Eacute;coutez le bruit du monde";
+}
+else
+	$title = "NewsBoard: Écoutez le bruit du monde";
+?>
 <!DOCTYPE html>
 <html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-		<title>NewsBoard: Écoutez le bruit du monde</title>
+		<title><?php echo $title; ?></title>
 		<link href="style.css" type="text/css" rel="stylesheet" media="screen">
 		<link href="colorbox.css" type="text/css" rel="stylesheet" media="screen">
 
