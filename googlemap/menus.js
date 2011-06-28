@@ -9,10 +9,13 @@ function setLanguage(elt)
 	switch(lang)
 	{
 		case 'fr':
-			language= 'fr-FR';
+			language= 'fr';
 			break;
 		case 'en':
-			language='en-US';
+			language='en';
+			break;	
+		case 'es':
+			language='es';
 			break;	
 	}
 	mc.clearMarkers();

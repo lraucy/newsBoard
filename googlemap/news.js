@@ -8,7 +8,7 @@
  * ***************************************/
 
 //parameters
-var language = "en-US"; // initial value for language
+var language = "en"; // initial value for language
 var tableid = 1019598;
 
 var listMarkers = [];
