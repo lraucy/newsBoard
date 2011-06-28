@@ -66,6 +66,11 @@ h2{
 	height:671px;
 	padding:10px;
 }
+.news_in_list
+{
+	border-bottom:1px #ddd solid;
+	padding-top:5px;
+}
 #map_canvas{
 	width: 800px;
 	height:600px;
