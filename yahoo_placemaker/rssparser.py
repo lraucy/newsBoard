@@ -22,10 +22,10 @@ from pyproj import Geod
 
 class FeedPlace(object):
 
-    def __init__(self, placemakerplace, language='en-US'):
-        self.language = language
+    def __init__(self, placemakerplace, lang='en-US'):
+        self.lang = lang
         self.places = placemakerplace
-        geo = Geoplanet(self.language)
+        geo = Geoplanet(self.lang)
         geod = Geod(ellps='WGS84')
 
         # Si la liste des lieux est vide, on élimine la
@@ -62,7 +62,7 @@ class FeedPlace(object):
             # Si le lieu le plus probable est trop étendu, on essaie de trouver
             # dans la liste un lieu descendant de ce dernier
             # -> Le lieu le plus probable devient ce lieu descendant
-            if self.place.placetype in ['Continent', 'Supername', 'Colloquial']:
+            if self.place.placetype in ['Continent', 'Supername']:
                 children = geo.find_children_by_woeid(self.place.woeid, 200)
                 #children = geo.find_descendants_by_woeid(self.place.woeid)
                 for child in children:
@@ -122,9 +122,10 @@ class FeedPlace(object):
             self.longitude = 0
             self.woeid = 0
 
+
 class Feed(object):
 
-    def __init__(self, title='None', date='None', place='None', description='None', link='None', picture='None', other_links='None', number='None', language='None', max_dist='None', date_parsed='None'):
+    def __init__(self, title='None', date='None', place='None', description='None', link='None', picture='None', other_links='None', number='None', lang='None',lang_place='None', max_dist='None', date_parsed='None', topic='None'):
         self.title = title
         self.date = date
         self.date_parsed = date_parsed
@@ -134,19 +135,23 @@ class Feed(object):
         self.picture = picture
         self.other_links = other_links
         self.number = number
-        self.language = language
+        self.lang = lang
+        self.lang_place = lang_place
+        self.topic = topic
+
 
 class RssParser(object):
 
-    def __init__(self, url, language):
-        self.language = language
-        self.flux = parse(url)
+    def __init__(self, url):
+        self.url = url
+        self.lang, self.lang_place, self.topic = parse_url(self.url)
+        self.flux = parse(self.url)
         self.list_feeds = []
 
     def process(self):
         for i in range(len(self.flux['entries'])):
-            feed = Feed(language=self.language)
-            p = Placemaker(language=self.language)
+            feed = Feed(lang=self.lang, lang_place=self.lang_place, topic=self.topic)
+            p = Placemaker(lang=self.lang_place)
             feed.title = self.flux.entries[i].title.encode('utf-8', 'ignore')
             feed.date = self.flux.entries[i].date.encode('utf-8', 'ignore')
             feed.date_parsed = self.flux.entries[i].updated_parsed
@@ -154,7 +159,7 @@ class RssParser(object):
             feed.description = clear_text(self.flux.entries[i].description)
             placemaker_place = feed.description + feed.title
             p.find_places(placemaker_place)
-            feed.place = FeedPlace(p.places, language=self.language)
+            feed.place = FeedPlace(p.places, lang=self.lang_place)
             feed.link = re.sub(r'http:(.*?)url=', '', self.flux.entries[i].link)
             feed.link = feed.link.encode('utf-8', 'ignore')
             temp = re.findall(r'src="([^"]*)"', self.flux.entries[i].description.encode('utf-8', 'ignore'))
@@ -168,7 +173,9 @@ class RssParser(object):
 
     def print_feeds(self):
         for feed in self.list_feeds:
-            print 'LANGUAGE : %s' % feed.language
+            print 'LANG : %s' % feed.lang
+            print 'LANG_PLACE : %s' % feed.lang_place
+            print 'TOPIC : %s' % feed.topic
             print 'TITLE : %s' % feed.title
             print 'DESCRIPTION : \n %s' % feed.description
             print 'DATE : %s' % feed.date
@@ -187,7 +194,92 @@ class RssParser(object):
             print 'NUMBER : %s' % feed.number
             print
 
-def clear_text(text):
+def clear_text(text='None'):
     temp =  reduce(lambda x, y: x + y, filter(lambda x: re.match(r'[<>]', x) == None, map(lambda x: re.sub(r'</?(b|font size="-1")>', '', x),re.findall(r'<font size="-1">(.*?)</font>', text))), '')
     return temp.encode('utf-8')
 
+def parse_url(url='None'):
+    split_url = url.split('&')
+    language = split_url[2][4:]
+    lang = dico_lang[language]
+    lang_place = dico_lang_place[language]
+
+    if split_url[4].find('output') != -1:
+        topic = 'starred'
+    else:
+        topic = split_url[4][6:]
+        topic = dico_topic[topic]
+
+    return lang, lang_place, topic
+
+dico_topic = {'w' : 'news',
+              'n' : 'news',
+              'af' : 'news',
+              'se' : 'news',
+              'b' : 'business',
+              't' : 'science/tech',
+              's' : 'sport',
+              'm' : 'health',
+              'ir' : 'spotlight',
+              'po' : 'spotlight',
+              }
+
+dico_lang_place = {'fr' : 'fr-FR',
+                   'fr_ch' : 'fr-FR',
+                   'fr_sn' : 'fr-FR',
+                   'fr_ca' : 'fr-CA',
+                   'fr_be' : 'fr-FR',
+                   'es' : 'es-ES',
+                   'es_ve' : 'es-ES',
+                   'es_pe' : 'es-ES',
+                   'es_mx' : 'es-MX',
+                   'es_us' : 'es-US',
+                   'es_cu' : 'es-ES',
+                   'es_co' : 'es-ES',
+                   'es_cl' : 'es-ES',
+                   'es_ar' : 'es-ES',
+                   'us' : 'en-US',
+                   'uk' : 'en-GB',
+                   'en_ph' : 'en-US',
+                   'en_ug' : 'en-US',
+                   'nz' : 'en-US',
+                   'en_na' : 'en-US',
+                   'en_my' : 'en-US',
+                   'en_ke' : 'en-US',
+                   'en_ie' : 'en-UK',
+                   'in' : 'en-US',
+                   'ca' : 'en-CA',
+                   'en_bw' : 'en-US',
+                   'au' : 'en-AU',
+                   'en_za' : 'en-ZA',
+                   }
+
+dico_lang = {'fr' : 'french',
+             'fr_ch' : 'french',
+             'fr_sn' : 'french',
+             'fr_ca' : 'french',
+             'fr_be' : 'french',
+             'es' : 'spanish',
+             'es_ve' : 'spanish',
+             'es_pe' : 'spanish',
+             'es_mx' : 'spanish',
+             'es_us' : 'spanish',
+             'es_cu' : 'spanish',
+             'es_co' : 'spanish',
+             'es_cl' : 'spanish',
+             'es_ar' : 'spanish',
+             'us' : 'english',
+             'uk' : 'english',
+             'en_ph' : 'english',
+             'en_ug' : 'english',
+             'nz' : 'english',
+             'en_na' : 'english',
+             'en_my' : 'english',
+             'en_ke' : 'english',
+             'en_ie' : 'english',
+             'in' : 'english',
+             'ca' : 'english',
+             'en_bw' : 'english',
+             'au' : 'english',
+             'en_za' : 'english',
+             }

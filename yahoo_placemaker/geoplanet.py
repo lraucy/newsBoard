@@ -56,13 +56,13 @@ class GeoplanetPoint(object):
 
 class Geoplanet(object):
 
-    def __init__(self, language='en-US'):
-        self.language = language
+    def __init__(self, lang='en-US'):
+        self.lang = lang
 
     def find_places_by_woeids(self, woeid=[], format='xml', view='long'):
         self.url = API_URL + '/places.woeid(' + ','.join(str(i) for i in woeid) + ')?'
         self.values = {'appid': API_KEY,
-                       'lang': self.language,
+                       'lang': self.lang,
                        'format': format,
                        'view': view,
                        }
@@ -79,7 +79,7 @@ class Geoplanet(object):
     def find_place_by_woeid(self, woeid=0, format='xml', view='long'):
         self.url = API_URL + '/place/' + str(woeid) + '?'
         self.values = {'appid': API_KEY,
-                       'lang': self.language,
+                       'lang': self.lang,
                        'format': format,
                        'view': view,
                        }
@@ -93,7 +93,7 @@ class Geoplanet(object):
     def find_places_by_name(self, name='', format='xml', view='long', count='5'):
         self.url = API_URL + '/places.q(' + str(name)+ ');' + 'count=' + str(count) + '?'
         self.values = {'appid': API_KEY,
-                       'lang': self.language,
+                       'lang': self.lang,
                        'format': format,
                        'view': view,
                        }
@@ -110,7 +110,7 @@ class Geoplanet(object):
         self.url = API_URL + '/place/' + str(woeid) + '/parent?'
         self.values = {'appid': API_KEY,
                        'select': 'long',
-                       'lang': self.language,
+                       'lang': self.lang,
                        'format': format,
                        }
 
@@ -125,7 +125,7 @@ class Geoplanet(object):
         self.url = API_URL + '/place/' + str(woeid) + '/ancestors?'
         self.values = {'appid': API_KEY,
                        'select': 'long',
-                       'lang': self.language,
+                       'lang': self.lang,
                        'format': format,
                        }
 
@@ -141,7 +141,7 @@ class Geoplanet(object):
         self.url = API_URL + '/place/' + str(woeid) + '/belongtos' + ';' + 'count=' + str(count) + '?'
         self.values = {'appid': API_KEY,
                        'select': 'long',
-                       'lang': self.language,
+                       'lang': self.lang,
                        'format': format,
                        }
 
@@ -157,7 +157,7 @@ class Geoplanet(object):
         self.url = API_URL + '/place/' + str(woeid) + '/neighbors?'
         self.values = {'appid': API_KEY,
                        'select': 'long',
-                       'lang': self.language,
+                       'lang': self.lang,
                        'format': format,
                        }
 
@@ -173,7 +173,7 @@ class Geoplanet(object):
         self.url = API_URL + '/place/' + str(woeid) + '/neighbors.degree(2)?'
         self.values = {'appid': API_KEY,
                        'select': 'long',
-                       'lang': self.language,
+                       'lang': self.lang,
                        'format': format,
                        }
 
@@ -189,7 +189,7 @@ class Geoplanet(object):
         self.url = API_URL + '/place/' + str(woeid) + '/siblings?'
         self.values = {'appid': API_KEY,
                        'select': 'long',
-                       'lang': self.language,
+                       'lang': self.lang,
                        'format': format,
                        }
 
@@ -205,7 +205,7 @@ class Geoplanet(object):
         self.url = API_URL + '/place/' + str(woeid) + '/children' + ';' + 'count=' + str(count) + '?'
         self.values = {'appid': API_KEY,
                        'select': 'long',
-                       'lang': self.language,
+                       'lang': self.lang,
                        'format': format,
                        }
 
@@ -220,7 +220,7 @@ class Geoplanet(object):
         self.url = API_URL + '/place/' + str(woeid) + '/children.degree(2)?'
         self.values = {'appid': API_KEY,
                        'select': 'long',
-                       'lang': self.language,
+                       'lang': self.lang,
                        'format': format,
                        }
 
@@ -235,7 +235,7 @@ class Geoplanet(object):
     def find_descendants_by_woeid(self, woeid=0, count=100, format='xml', select='long'):
         self.url = API_URL + '/place/' + str(woeid) + '/descendants' + '?'
         self.values = {'appid': API_KEY,
-                       'lang': self.language,
+                       'lang': self.lang,
                        'select': select,
                        'format': format,
                        }

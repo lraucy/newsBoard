@@ -80,8 +80,8 @@ class PlacemakerPoint(object):
 
 class Placemaker(object):
 
-    def __init__(self, language='en-US'):
-        self.language = language
+    def __init__(self, lang='en-US'):
+        self.lang = lang
 
 
     def find_places(self, input, documentType='text/plain',
@@ -90,7 +90,7 @@ class Placemaker(object):
 
         self.values = {'appid': API_KEY,
                        'documentType': documentType,
-                       'inputLanguage': self.language,
+                       'inputLanguage': self.lang,
                        'documentContent': input,
                        'outputType': outputType,
                        'documentTitle': documentTitle,
