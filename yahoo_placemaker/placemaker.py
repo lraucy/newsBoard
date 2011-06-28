@@ -111,14 +111,14 @@ class Placemaker(object):
             raise PlacemakerApiError('Request received a response code of %d: %s' % (self.response.code, response_codes[self.response.code]))
 
         self.response_xml = self.response.read()
-
-        self.tree = ElementTree.fromstring(self.response_xml)
-
-        self.doc = self.tree.find('%sdocument' % TAG_PREFIX)
-
-        place_details = self.doc.findall('%splaceDetails' % TAG_PREFIX)
-        self.places = [PlacemakerPlace(place) for place in place_details]
-        return self.places
+        try:
+            self.tree = ElementTree.fromstring(self.response_xml)
+            self.doc = self.tree.find('%sdocument' % TAG_PREFIX)
+            place_details = self.doc.findall('%splaceDetails' % TAG_PREFIX)
+            self.places = [PlacemakerPlace(place) for place in place_details]
+            return self.places
+        except:
+            return []
 
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:

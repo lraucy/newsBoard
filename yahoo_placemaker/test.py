@@ -84,13 +84,13 @@ URL_SOURCE = [
 
     # Nouvelle Zélande
     # Business
-    'http://news.google.co.ug/news?pz=1&cf=all&ned=nz&hl=en&topic=b&output=rss',
+    'http://news.google.co.nz/news?pz=1&cf=all&ned=nz&hl=en&topic=b&output=rss',
     # Sciences
-    'http://news.google.co.ug/news?pz=1&cf=all&ned=nz&hl=en&topic=t&output=rss',
+    'http://news.google.co.nz/news?pz=1&cf=all&ned=nz&hl=en&topic=t&output=rss',
     # Sports
-    'http://news.google.co.ug/news?pz=1&cf=all&ned=nz&hl=en&topic=s&output=rss',
+    'http://news.google.co.nz/news?pz=1&cf=all&ned=nz&hl=en&topic=s&output=rss',
     # Santé
-    'http://news.google.co.ug/news?pz=1&cf=all&ned=nz&hl=en&topic=m&output=rss',
+    'http://news.google.co.nz/news?pz=1&cf=all&ned=nz&hl=en&topic=m&output=rss',
     # A la une
     'http://news.google.co.nz/news?pz=1&cf=all&ned=nz&hl=en&output=rss',
     # Plus populaires
@@ -98,25 +98,25 @@ URL_SOURCE = [
     # National
     'http://news.google.co.nz/news?pz=1&cf=all&ned=nz&hl=en&topic=n&output=rss',
     # International
-    'http://news.google.co.ug/news?pz=1&cf=all&ned=nz&hl=en&topic=w&output=rss',
+    'http://news.google.co.nz/news?pz=1&cf=all&ned=nz&hl=en&topic=w&output=rss',
 
     # Namibie
     # Business
-    'http://news.google.co.na/news?pz=1&cf=all&ned=en_na&hl=en&topic=b&output=rss',
+    'http://news.google.com.na/news?pz=1&cf=all&ned=en_na&hl=en&topic=b&output=rss',
     # Sciences
-    'http://news.google.co.na/news?pz=1&cf=all&ned=en_na&hl=en&topic=t&output=rss',
+    'http://news.google.com.na/news?pz=1&cf=all&ned=en_na&hl=en&topic=t&output=rss',
     # Sports
-    'http://news.google.co.na/news?pz=1&cf=all&ned=en_na&hl=en&topic=s&output=rss',
+    'http://news.google.com.na/news?pz=1&cf=all&ned=en_na&hl=en&topic=s&output=rss',
     # Santé
-    'http://news.google.co.na/news?pz=1&cf=all&ned=en_na&hl=en&topic=m&output=rss',
+    'http://news.google.com.na/news?pz=1&cf=all&ned=en_na&hl=en&topic=m&output=rss',
     # A la une
-    'http://news.google.co.na/news?pz=1&cf=all&ned=en_na&hl=en&output=rss',
+    'http://news.google.com.na/news?pz=1&cf=all&ned=en_na&hl=en&output=rss',
     # National
-    'http://news.google.co.na/news?pz=1&cf=all&ned=en_na&hl=en&topic=n&output=rss',
+    'http://news.google.com.na/news?pz=1&cf=all&ned=en_na&hl=en&topic=n&output=rss',
     # Afrique
-    'http://news.google.co.na/news?pz=1&cf=all&ned=en_na&hl=en&topic=af&output=rss',
+    'http://news.google.com.na/news?pz=1&cf=all&ned=en_na&hl=en&topic=af&output=rss',
     # International
-    'http://news.google.co.na/news?pz=1&cf=all&ned=en_na&hl=en&topic=w&output=rss',
+    'http://news.google.com.na/news?pz=1&cf=all&ned=en_na&hl=en&topic=w&output=rss',
 
     # Malaisie
     # Business
@@ -477,21 +477,21 @@ URL_SOURCE = [
 
     # Chili
     # Economie
-    'http://news.google.com.cl/news?pz=1&cf=all&ned=es_cl&hl=es&topic=b&output=rss',
+    'http://news.google.cl/news?pz=1&cf=all&ned=es_cl&hl=es&topic=b&output=rss',
     # Sciences
-    'http://news.google.com.cl/news?pz=1&cf=all&ned=es_cl&hl=es&topic=t&output=rss',
+    'http://news.google.cl/news?pz=1&cf=all&ned=es_cl&hl=es&topic=t&output=rss',
     # Sport
-    'http://news.google.com.cl/news?pz=1&cf=all&ned=es_cl&hl=es&topic=s&output=rss',
+    'http://news.google.cl/news?pz=1&cf=all&ned=es_cl&hl=es&topic=s&output=rss',
     # Santé
-    'http://news.google.com.cl/news?pz=1&cf=all&ned=es_cl&hl=es&topic=m&output=rss',
+    'http://news.google.cl/news?pz=1&cf=all&ned=es_cl&hl=es&topic=m&output=rss',
     # A la une
-    'http://news.google.com.cl/news?pz=1&cf=all&ned=es_cl&hl=es&output=rss'
+    'http://news.google.cl/news?pz=1&cf=all&ned=es_cl&hl=es&output=rss'
     # Plus populaires
-    'http://news.google.com.cl/news?pz=1&cf=all&ned=es_cl&hl=es&topic=po&output=rss',
+    'http://news.google.cl/news?pz=1&cf=all&ned=es_cl&hl=es&topic=po&output=rss',
     # National
-    'http://news.google.com.cl/news?pz=1&cf=all&ned=es_cl&hl=es&topic=n&output=rss',
+    'http://news.google.cl/news?pz=1&cf=all&ned=es_cl&hl=es&topic=n&output=rss',
     # International
-    'http://news.google.com.cl/news?pz=1&cf=all&ned=es_cl&hl=es&topic=w&output=rss',
+    'http://news.google.cl/news?pz=1&cf=all&ned=es_cl&hl=es&topic=w&output=rss',
 
     # Argentine
     # Economie
