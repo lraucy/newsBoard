@@ -553,6 +553,7 @@ for url in URL_SOURCE:
             'Picture': str(feed.picture),
             'Language': str(feed.lang),
             'Topic': str(feed.topic),
+            'Source' : str(feed.source),
             'Description': feed.description.replace("'","\\'"),
             })).split("\n")[1])
             print rowid
