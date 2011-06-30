@@ -125,7 +125,7 @@ class FeedPlace(object):
 
 class Feed(object):
 
-    def __init__(self, title='None', date='None', place='None', description='None', link='None', picture='None', other_links='None', number='None', lang='None',lang_place='None', max_dist='None', date_parsed='None', topic='None'):
+    def __init__(self, title='None', date='None', place='None', description='None', link='None', picture='None', other_links='None', number='None', lang='None',lang_place='None', max_dist='None', date_parsed='None', topic='None', source='None'):
         self.title = title
         self.date = date
         self.date_parsed = date_parsed
@@ -138,6 +138,7 @@ class Feed(object):
         self.lang = lang
         self.lang_place = lang_place
         self.topic = topic
+        self.source = source
 
 
 class RssParser(object):
@@ -152,7 +153,7 @@ class RssParser(object):
         for i in range(len(self.flux['entries'])):
             feed = Feed(lang=self.lang, lang_place=self.lang_place, topic=self.topic)
             p = Placemaker(lang=self.lang_place)
-            feed.title = self.flux.entries[i].title.encode('utf-8', 'ignore')
+            feed.title, feed.source = parse_title(self.flux.entries[i].title.encode('utf-8', 'ignore'))
             feed.date = self.flux.entries[i].date.encode('utf-8', 'ignore')
             feed.date_parsed = self.flux.entries[i].updated_parsed
             feed.number = self.flux.entries[i].guid.split('=')[1]
@@ -177,6 +178,7 @@ class RssParser(object):
             print 'LANG_PLACE : %s' % feed.lang_place
             print 'TOPIC : %s' % feed.topic
             print 'TITLE : %s' % feed.title
+            print 'SOURCE : %s' % feed.source
             print 'DESCRIPTION : \n %s' % feed.description
             print 'DATE : %s' % feed.date
             print 'YEAR : %s' % feed.date_parsed.tm_year
@@ -211,6 +213,13 @@ def parse_url(url='None'):
         topic = dico_topic[topic]
 
     return lang, lang_place, topic
+
+def parse_title(title='None'):
+    title_split = title.split('-')
+    source = title_split[len(title_split)-1]
+    title_split = title_split.pop(0)
+    title = reduce(lambda x, y: x + y, (title_split))
+    return title, source
 
 dico_topic = {'w' : 'news',
               'n' : 'news',
