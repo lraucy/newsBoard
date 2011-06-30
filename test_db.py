@@ -539,7 +539,6 @@ for url in URL_SOURCE:
     feeds = flux_rss.process()
     for feed in feeds:
         print "\n"
-        print feed.description.decode('utf-8').replace("'","\\'")
         try :
             if ft_client.query(SQL().select(tableid, None,"Title='" + feed.title.replace("'","\\'") + "'")).count('\n')==1 and (feed.place.latitude!=0 or feed.place.longitude!=0):
                 rowid = int(ft_client.query(SQL().insert(tableid, {'Title':
