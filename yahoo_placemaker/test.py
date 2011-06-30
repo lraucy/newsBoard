@@ -516,7 +516,7 @@ URL_SOURCE = [
 for url in URL_SOURCE:
     flux_rss = RssParser(url)
     feeds = flux_rss.process()
-    flux_rss.print_feeds()
+#    flux_rss.print_feeds()
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
 
 

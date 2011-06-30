@@ -217,8 +217,8 @@ def parse_url(url='None'):
 def parse_title(title='None'):
     title_split = title.split('-')
     source = title_split[len(title_split)-1]
-    title_split = title_split.pop(0)
-    title = reduce(lambda x, y: x + y, (title_split))
+    source = source[1:]
+    title = title[:len(title)-len(source)-3]
     return title, source
 
 dico_topic = {'w' : 'news',
