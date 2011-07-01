@@ -156,7 +156,7 @@ class RssParser(object):
             p = Placemaker(lang=self.lang_place)
             feed.title, feed.source = parse_title(self.flux.entries[i].title.encode('utf-8', 'ignore'))
             feed.date_parsed = self.flux.entries[i].updated_parsed
-            feed.date = time.strftime("%m/%d/%y %H:%M %p", feed.date_parsed)
+            feed.date = time.strftime("%m/%d/%y %I:%M %p", feed.date_parsed)
             feed.number = self.flux.entries[i].guid.split('=')[1]
             feed.description = clear_text(self.flux.entries[i].description)
             placemaker_place = feed.description + feed.title
