@@ -103,7 +103,12 @@ function contentPopupPC(response, numRows, numCols) {
 		for (j = 0; j < numCols; j++) {
 			row.push(response.getDataTable().getValue(i, j));
 		}
-		htmlContent += '<h3><a href="' + row[2] + '" class="external_link">' + row[0] + '</a></h3><h4><span class="source">' + row[6] + '</span> - <span class="theme">' + row[7] + '</span> - <span class="newsDate">' + row[1]  + '</span></h4><p>' + row[3] + '</p></div>';
+		var date = new Date(Date.parse(row[1]));
+		if (language == "en")
+			var dateFormat = (date.getMonth()+1) + "/" + date.getDate() + "/" + date.getFullYear();
+		else
+			var dateFormat = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+		htmlContent += '<h3><a href="' + row[2] + '" class="external_link">' + row[0] + '</a></h3><h4><span class="source">' + row[6] + '</span> - <span class="theme">' + row[7] + '</span> - <span class="newsDate">' + dateFormat+ '</span></h4><p>' + row[3] + '</p></div>';
 	}
 	return htmlContent;
 
