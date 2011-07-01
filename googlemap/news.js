@@ -68,7 +68,7 @@ function getNewsCluster(cluster)
 		var min_lng = bounds.getSouthWest().lng();
 		// query do not use geographic features of Fusion Tables because it needs geocoding... and we wannot geocode from python script.
 		// so we use this sort of "hack"
-		var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Title, Date, url, Description, Picture, Latitude, Longitude FROM 1019598 WHERE Latitude >= " + (min_lat - 0.01) + " AND Latitude <= " + (max_lat + 0.01) + " AND Longitude >= " + (min_lng - 0.01) + " AND Longitude <= " + (max_lng + 0.01) + " AND Language = '" + language + "'"));
+		var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Title, Date, url, Description, Latitude, Longitude, Source, Topic FROM 1019598 WHERE Latitude >= " + (min_lat - 0.01) + " AND Latitude <= " + (max_lat + 0.01) + " AND Longitude >= " + (min_lng - 0.01) + " AND Longitude <= " + (max_lng + 0.01) + " AND Language = '" + language + "'"));
 
 		// we put the loading image
 		$("#news_list").html('<div class="waiter"></div>');
@@ -103,7 +103,7 @@ function contentPopupPC(response, numRows, numCols) {
 		for (j = 0; j < numCols; j++) {
 			row.push(response.getDataTable().getValue(i, j));
 		}
-		htmlContent += '<h3><a href="' + row[2] + '" class="external_link">' + row[0] + '</a></h3><p>' + row[3] + '</div>';
+		htmlContent += '<h3><a href="' + row[2] + '" class="external_link">' + row[0] + '</a></h3><h4><span class="source">' + row[6] + '</span> - <span class="theme">' + row[7] + '</span> - <span class="newsDate">' + row[1]  + '</span></h4><p>' + row[3] + '</p></div>';
 	}
 	return htmlContent;
 
