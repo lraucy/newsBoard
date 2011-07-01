@@ -14,6 +14,7 @@ API_URL = 'http://wherein.yahooapis.com/v1/document'
 
 import re
 import sys
+import time
 from feedparser import parse
 from placemaker import Placemaker
 from geoplanet import Geoplanet
@@ -154,8 +155,8 @@ class RssParser(object):
             feed = Feed(lang=self.lang, lang_place=self.lang_place, topic=self.topic)
             p = Placemaker(lang=self.lang_place)
             feed.title, feed.source = parse_title(self.flux.entries[i].title.encode('utf-8', 'ignore'))
-            feed.date = self.flux.entries[i].date.encode('utf-8', 'ignore')
             feed.date_parsed = self.flux.entries[i].updated_parsed
+            feed.date = time.strftime("%d %b %Y %H:%M", feed.date_parsed)
             feed.number = self.flux.entries[i].guid.split('=')[1]
             feed.description = clear_text(self.flux.entries[i].description)
             placemaker_place = feed.description + feed.title
