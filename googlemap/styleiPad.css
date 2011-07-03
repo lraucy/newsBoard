@@ -31,8 +31,8 @@ h2{
 	background:url(logo.png) no-repeat 0 0;
 }
 #header #language_chooser{
+	clear:both;
 	float:right;
-	margin-top:50px;
 	padding-right:5px;
 }
 
@@ -87,6 +87,12 @@ footer{
 	border-bottom:1px #ddd solid;
 }
 
+#searchContainer{
+	float:right;
+	margin-top:5px;
+	margin-right:5px;
+	padding-right:0px;
+}
 @media only screen and (orientation:portrait){
 	#right_side{
 		position:absolute;

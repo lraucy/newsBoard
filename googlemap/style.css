@@ -31,8 +31,8 @@ h2{
 	background:url(logo.png) no-repeat 0 0;
 }
 #header #language_chooser{
+	clear:both;
 	float:right;
-	margin-top:50px;
 	padding-right:5px;
 	font-size:14px;
 	font-weight:bold;
@@ -98,4 +98,9 @@ footer{
 	width:200px;
 }
 
-
+#searchContainer{
+	float:right;
+	margin-top:5px;
+	margin-right:5px;
+	padding-right:0px;
+}

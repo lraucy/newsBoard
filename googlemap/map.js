@@ -29,6 +29,7 @@ function initialize()
 	map = new google.maps.Map(document.getElementById("map_canvas"), my_map_option);
 	mc = createCluster();
 	styleMap(map);
+	menuInitialization();
 	if (isiPad) iPadInitialization();
 	setData();
 }

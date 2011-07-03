@@ -13,13 +13,15 @@ var tableid = 1019598;
 
 var listMarkers = [];
 var lastCluster;
+var search;
 
 
 google.load('visualization', '1');
 
 // get the data to place on the map
 function setData() {
-	var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Latitude, Longitude FROM 1019598 WHERE Language='" + language + "'"));
+	var requestSearch = (search == undefined) ? "" : " AND Description CONTAINS IGNORING CASE '" + search +"'";
+	var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Latitude, Longitude FROM 1019598 WHERE Language='" + language + "'" + requestSearch));
 	query.send(getData);
 }
 
@@ -68,7 +70,8 @@ function getNewsCluster(cluster)
 		var min_lng = bounds.getSouthWest().lng();
 		// query do not use geographic features of Fusion Tables because it needs geocoding... and we wannot geocode from python script.
 		// so we use this sort of "hack"
-		var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Title, Date, url, Description, Latitude, Longitude, Source, Topic FROM 1019598 WHERE Latitude >= " + (min_lat - 0.01) + " AND Latitude <= " + (max_lat + 0.01) + " AND Longitude >= " + (min_lng - 0.01) + " AND Longitude <= " + (max_lng + 0.01) + " AND Language = '" + language + "'"));
+		var requestSearch = (search == undefined) ? "" : " AND Description CONTAINS IGNORING CASE '" + search +"'";
+		var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Title, Date, url, Description, Latitude, Longitude, Source, Topic FROM 1019598 WHERE Latitude >= " + (min_lat - 0.01) + " AND Latitude <= " + (max_lat + 0.01) + " AND Longitude >= " + (min_lng - 0.01) + " AND Longitude <= " + (max_lng + 0.01) + " AND Language = '" + language + "'" + requestSearch + "ORDER BY Date DESC"));
 
 		// we put the loading image
 		$("#news_list").html('<div class="waiter"></div>');

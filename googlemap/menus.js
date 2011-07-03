@@ -40,3 +40,13 @@ function dezoomMap()
 	return false;
 }
 
+function menuInitialization()
+{
+	$("#searchInput").change(function(){
+		search = $(this).val();
+		mc.clearMarkers();
+		setData();
+		$("#news_list").html("");
+	});
+}
+
