@@ -531,7 +531,7 @@ token = ClientLogin().authorize(auth.login, auth.password)
 ft_client = fusiontables.ftclient.ClientLoginFTClient(token)
 
 # Erase all datas in the google table
-ft_client.query(SQL().deleteAllRows(tableid))
+#ft_client.query(SQL().deleteAllRows(tableid))
 
 for url in URL_SOURCE:
     flux_rss = RssParser(url)
