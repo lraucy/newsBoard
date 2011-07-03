@@ -15,6 +15,7 @@ else
 		<title><?php echo $title; ?></title>
 		<link href="style.css" type="text/css" rel="stylesheet" media="screen">
 		<link href="colorbox.css" type="text/css" rel="stylesheet" media="screen">
+		<link href="jquery-ui-1.8.14.custom.css" type="text/css" rel="stylesheet" media="screen">
 
 
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
@@ -81,6 +82,7 @@ if(preg_match("/iphone|android|symbian/i",
 	<option value="starred">starred</option>
 					</select></div>
 <div id="language_chooser"><a href="#" onclick="dezoomMap();">Initial map</a> | <span class="lang">en</span> <a href="#" onclick="setLanguage(this);"><span class="lang">fr</span></a> <a href="#" onclick="setLanguage(this);"><span class="lang">es</span></a></div>
+<div id="dateChooser">Day: <input type="text" size="10" id="datepicker" /></div>
 </div>
 					<div id="map_canvas"></div>
 				</div>

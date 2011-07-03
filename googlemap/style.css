@@ -37,6 +37,8 @@ h2{
 	font-size:14px;
 	font-weight:bold;
 	color:#d50011;
+	margin-top:5px;
+	margin-right:5px;
 }
 #header #language_chooser a{
 	font-size:12px;
@@ -99,6 +101,11 @@ footer{
 }
 
 #selectTheme{
+	float:right;
+	margin-top:5px;
+	margin-right:5px;
+}
+#dateChooser{
 	float:right;
 	margin-top:5px;
 	margin-right:5px;

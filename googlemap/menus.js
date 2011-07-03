@@ -54,5 +54,15 @@ function menuInitialization()
 		setData();
 		$("#news_list").html("");
 	});
+	
+	$("#datepicker").change(function(){
+		dateSelection = $(this).val();
+		mc.clearMarkers();
+		setData();
+		$("#news_list").html("");
+	});
+	$(function(){
+		$("#datepicker").datepicker({ dateFormat: 'mm/dd/yy'});
+	});
 }
 
