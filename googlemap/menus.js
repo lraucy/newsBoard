@@ -48,5 +48,11 @@ function menuInitialization()
 		setData();
 		$("#news_list").html("");
 	});
+	$("#selectTheme select").change(function(){
+		theme = $(this).val();
+		mc.clearMarkers();
+		setData();
+		$("#news_list").html("");
+	});
 }
 

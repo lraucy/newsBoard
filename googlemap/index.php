@@ -70,6 +70,16 @@ if(preg_match("/iphone|android|symbian/i",
 				<div id="left_side">
 					<div id="header">
 <div id="searchContainer"><input type="text" name="searchInput" id="searchInput"></input> <button>Search</button></div>
+<div id="selectTheme"><select>
+	<option value="All">All</option>
+	<option value="news">news</option>
+	<option value="business">business</option>
+	<option value="science/tech">science/tech</option>
+	<option value="health">health</option>
+	<option value="sport">sport</option>
+	<option value="spotlight">spotlight</option>
+	<option value="starred">starred</option>
+					</select></div>
 <div id="language_chooser"><a href="#" onclick="dezoomMap();">Initial map</a> | <span class="lang">en</span> <a href="#" onclick="setLanguage(this);"><span class="lang">fr</span></a> <a href="#" onclick="setLanguage(this);"><span class="lang">es</span></a></div>
 </div>
 					<div id="map_canvas"></div>

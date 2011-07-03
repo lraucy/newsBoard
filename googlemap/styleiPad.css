@@ -87,6 +87,11 @@ footer{
 	border-bottom:1px #ddd solid;
 }
 
+#selectTheme{
+	float:right;
+	margin-top:5px;
+	margin-right:5px;
+}
 #searchContainer{
 	float:right;
 	margin-top:5px;

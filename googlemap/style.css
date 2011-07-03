@@ -98,6 +98,11 @@ footer{
 	width:200px;
 }
 
+#selectTheme{
+	float:right;
+	margin-top:5px;
+	margin-right:5px;
+}
 #searchContainer{
 	float:right;
 	margin-top:5px;
