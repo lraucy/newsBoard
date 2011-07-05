@@ -66,15 +66,14 @@ class Geoplanet(object):
                        'format': format,
                        'view': view,
                        }
-
-        self.response_xml = request_geoplanet(self.url, self.values)
-
-        self.tree = ElementTree.fromstring(self.response_xml)
-
-        places = self.tree.findall('%splace' % TAG_PREFIX)
-        self.places = [GeoplanetPlace(place) for place in places]
-
-        return self.places
+        try:
+            self.response_xml = request_geoplanet(self.url, self.values)
+            self.tree = ElementTree.fromstring(self.response_xml)
+            places = self.tree.findall('%splace' % TAG_PREFIX)
+            self.places = [GeoplanetPlace(place) for place in places]
+            return self.places
+        except:
+            return []
 
     def find_place_by_woeid(self, woeid=0, format='xml', view='long'):
         self.url = API_URL + '/place/' + str(woeid) + '?'
@@ -83,12 +82,13 @@ class Geoplanet(object):
                        'format': format,
                        'view': view,
                        }
-
-        self.response_xml = request_geoplanet(self.url, self.values)
-        self.tree = ElementTree.fromstring(self.response_xml)
-        self.place = GeoplanetPlace(self.tree)
-
-        return self.place
+        try:
+            self.response_xml = request_geoplanet(self.url, self.values)
+            self.tree = ElementTree.fromstring(self.response_xml)
+            self.place = GeoplanetPlace(self.tree)
+            return self.place
+        except:
+            return []
 
     def find_places_by_name(self, name='', format='xml', view='long', count='5'):
         self.url = API_URL + '/places.q(' + str(name)+ ');' + 'count=' + str(count) + '?'
@@ -97,13 +97,14 @@ class Geoplanet(object):
                        'format': format,
                        'view': view,
                        }
-
-        self.response_xml = request_geoplanet(self.url, self.values)
-        self.tree = ElementTree.fromstring(self.response_xml)
-        places = self.tree.findall('%splace' % TAG_PREFIX)
-        self.places = [GeoplanetPlace(place) for place in places]
-
-        return self.places
+        try:
+            self.response_xml = request_geoplanet(self.url, self.values)
+            self.tree = ElementTree.fromstring(self.response_xml)
+            places = self.tree.findall('%splace' % TAG_PREFIX)
+            self.places = [GeoplanetPlace(place) for place in places]
+            return self.places
+        except:
+            return []
 
 
     def find_parent_by_woeid(self, woeid=0, format='xml', select='long'):
@@ -113,12 +114,13 @@ class Geoplanet(object):
                        'lang': self.lang,
                        'format': format,
                        }
-
-        self.response_xml = request_geoplanet(self.url, self.values)
-        self.tree = ElementTree.fromstring(self.response_xml)
-        self.parent = GeoplanetPlace(self.tree)
-
-        return self.parent
+        try:
+            self.response_xml = request_geoplanet(self.url, self.values)
+            self.tree = ElementTree.fromstring(self.response_xml)
+            self.parent = GeoplanetPlace(self.tree)
+            return self.parent
+        except:
+            return []
 
 
     def find_ancestors_by_woeid(self, woeid=0, format='xml', select='long'):
@@ -128,13 +130,14 @@ class Geoplanet(object):
                        'lang': self.lang,
                        'format': format,
                        }
-
-        self.response_xml = request_geoplanet(self.url, self.values)
-        self.tree = ElementTree.fromstring(self.response_xml)
-        ancestors = self.tree.findall('%splace' % TAG_PREFIX)
-        self.ancestors = [GeoplanetPlace(ancestor) for ancestor in ancestors]
-
-        return self.ancestors
+        try:
+            self.response_xml = request_geoplanet(self.url, self.values)
+            self.tree = ElementTree.fromstring(self.response_xml)
+            ancestors = self.tree.findall('%splace' % TAG_PREFIX)
+            self.ancestors = [GeoplanetPlace(ancestor) for ancestor in ancestors]
+            return self.ancestors
+        except:
+            return []
 
 
     def find_belongtos_by_woeid(self, woeid=0, count=0, format='xml', select='long'):
@@ -144,13 +147,14 @@ class Geoplanet(object):
                        'lang': self.lang,
                        'format': format,
                        }
-
-        self.response_xml = request_geoplanet(self.url, self.values)
-        self.tree = ElementTree.fromstring(self.response_xml)
-        belongtos = self.tree.findall('%splace' % TAG_PREFIX)
-        self.belongtos = [GeoplanetPlace(belongto) for belongto in belongtos]
-
-        return self.belongtos
+        try:
+            self.response_xml = request_geoplanet(self.url, self.values)
+            self.tree = ElementTree.fromstring(self.response_xml)
+            belongtos = self.tree.findall('%splace' % TAG_PREFIX)
+            self.belongtos = [GeoplanetPlace(belongto) for belongto in belongtos]
+            return self.belongtos
+        except:
+            return []
 
 
     def find_neighbors_by_woeid(self, woeid=0, format='xml', select='long'):
@@ -160,13 +164,14 @@ class Geoplanet(object):
                        'lang': self.lang,
                        'format': format,
                        }
-
-        self.response_xml = request_geoplanet(self.url, self.values)
-        self.tree = ElementTree.fromstring(self.response_xml)
-        neighbors = self.tree.findall('%splace' % TAG_PREFIX)
-        self.neighbors = [GeoplanetPlace(neighbor) for neighbor in neighbors]
-
-        return self.neighbors
+        try:
+            self.response_xml = request_geoplanet(self.url, self.values)
+            self.tree = ElementTree.fromstring(self.response_xml)
+            neighbors = self.tree.findall('%splace' % TAG_PREFIX)
+            self.neighbors = [GeoplanetPlace(neighbor) for neighbor in neighbors]
+            return self.neighbors
+        except:
+            return []
 
 
     def find_neighbors_of_neighbors_by_woeid(self, woeid=0, format='xml', select='long'):
@@ -176,13 +181,14 @@ class Geoplanet(object):
                        'lang': self.lang,
                        'format': format,
                        }
-
-        self.response_xml = request_geoplanet(self.url, self.values)
-        self.tree = ElementTree.fromstring(self.response_xml)
-        neighbors = self.tree.findall('%splace' % TAG_PREFIX)
-        self.neighbors = [GeoplanetPlace(neighbor) for neighbor in neighbors]
-
-        return self.neighbors
+        try:
+            self.response_xml = request_geoplanet(self.url, self.values)
+            self.tree = ElementTree.fromstring(self.response_xml)
+            neighbors = self.tree.findall('%splace' % TAG_PREFIX)
+            self.neighbors = [GeoplanetPlace(neighbor) for neighbor in neighbors]
+            return self.neighbors
+        except:
+            return []
 
 
     def find_siblings_by_woeid(self, woeid=0, format='xml', select='long'):
@@ -192,13 +198,14 @@ class Geoplanet(object):
                        'lang': self.lang,
                        'format': format,
                        }
-
-        self.response_xml = request_geoplanet(self.url, self.values)
-        self.tree = ElementTree.fromstring(self.response_xml)
-        siblings = self.tree.findall('%splace' % TAG_PREFIX)
-        self.siblings = [GeoplanetPlace(sibling) for sibling in siblings]
-
-        return self.siblings
+        try:
+            self.response_xml = request_geoplanet(self.url, self.values)
+            self.tree = ElementTree.fromstring(self.response_xml)
+            siblings = self.tree.findall('%splace' % TAG_PREFIX)
+            self.siblings = [GeoplanetPlace(sibling) for sibling in siblings]
+            return self.siblings
+        except:
+            return []
 
 
     def find_children_by_woeid(self, woeid=0, count=100, format='xml', select='long'):
@@ -208,13 +215,14 @@ class Geoplanet(object):
                        'lang': self.lang,
                        'format': format,
                        }
-
-        self.response_xml = request_geoplanet(self.url, self.values)
-        self.tree = ElementTree.fromstring(self.response_xml)
-        children = self.tree.findall('%splace' % TAG_PREFIX)
-        self.children = [GeoplanetPlace(child) for child in children]
-
-        return self.children
+        try:
+            self.response_xml = request_geoplanet(self.url, self.values)
+            self.tree = ElementTree.fromstring(self.response_xml)
+            children = self.tree.findall('%splace' % TAG_PREFIX)
+            self.children = [GeoplanetPlace(child) for child in children]
+            return self.children
+        except:
+            return []
 
     def find_children_of_children_by_woeid(self, woeid=0, format='xml', select='long'):
         self.url = API_URL + '/place/' + str(woeid) + '/children.degree(2)?'
@@ -223,13 +231,14 @@ class Geoplanet(object):
                        'lang': self.lang,
                        'format': format,
                        }
-
-        self.response_xml = request_geoplanet(self.url, self.values)
-        self.tree = ElementTree.fromstring(self.response_xml)
-        children = self.tree.findall('%splace' % TAG_PREFIX)
-        self.children = [GeoplanetPlace(child) for child in children]
-
-        return self.children
+        try:
+            self.response_xml = request_geoplanet(self.url, self.values)
+            self.tree = ElementTree.fromstring(self.response_xml)
+            children = self.tree.findall('%splace' % TAG_PREFIX)
+            self.children = [GeoplanetPlace(child) for child in children]
+            return self.children
+        except:
+            return []
 
 
     def find_descendants_by_woeid(self, woeid=0, count=100, format='xml', select='long'):
@@ -239,13 +248,14 @@ class Geoplanet(object):
                        'select': select,
                        'format': format,
                        }
-
-        self.response_xml = request_geoplanet(self.url, self.values)
-        self.tree = ElementTree.fromstring(self.response_xml)
-        descendants = self.tree.findall('%splace' % TAG_PREFIX)
-        self.descendants = [GeoplanetPlace(descendant) for descendant in descendants]
-
-        return self.descendants
+        try:
+            self.response_xml = request_geoplanet(self.url, self.values)
+            self.tree = ElementTree.fromstring(self.response_xml)
+            descendants = self.tree.findall('%splace' % TAG_PREFIX)
+            self.descendants = [GeoplanetPlace(descendant) for descendant in descendants]
+            return self.descendants
+        except:
+            return []
 
 
 def request_geoplanet(url, values):

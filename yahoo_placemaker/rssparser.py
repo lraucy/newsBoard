@@ -151,6 +151,7 @@ class RssParser(object):
         self.list_feeds = []
 
     def process(self):
+
         for i in range(len(self.flux['entries'])):
             feed = Feed(lang=self.lang, lang_place=self.lang_place, topic=self.topic)
             p = Placemaker(lang=self.lang_place)
@@ -161,7 +162,10 @@ class RssParser(object):
             feed.description = clear_text(self.flux.entries[i].description)
             placemaker_place = feed.description + feed.title
             p.find_places(placemaker_place)
-            feed.place = FeedPlace(p.places, lang=self.lang_place)
+            try:
+                feed.place = FeedPlace(placemakerplace=p.places, lang=self.lang_place)
+            except AttributeError:
+                feed.place = FeedPlace(placemakerplacer=[], lang=self.lang_place)
             feed.link = re.sub(r'http:(.*?)url=', '', self.flux.entries[i].link)
             feed.link = feed.link.encode('utf-8', 'ignore')
             temp = re.findall(r'src="([^"]*)"', self.flux.entries[i].description.encode('utf-8', 'ignore'))

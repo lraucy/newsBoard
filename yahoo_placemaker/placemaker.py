@@ -96,22 +96,20 @@ class Placemaker(object):
                        'documentTitle': documentTitle,
                        'autoDisambiguate': autoDisambiguate,
                        'focusWoeid': focusWoeid, }
-
-        self.data = urllib.urlencode(self.values)
-        self.req = urllib2.Request(API_URL, self.data)
-        self.response = urllib2.urlopen(self.req)
-
-        response_codes = {400: 'Bad Request',
-                          404: 'Not Found',
-                          413: 'Request Entity Too Large',
-                          415: 'Unsupported Media Type',
-                          999: 'Unable to process request at this time', }
-
-        if self.response.code != 200:
-            raise PlacemakerApiError('Request received a response code of %d: %s' % (self.response.code, response_codes[self.response.code]))
-
-        self.response_xml = self.response.read()
         try:
+            self.data = urllib.urlencode(self.values)
+            self.req = urllib2.Request(API_URL, self.data)
+            self.response = urllib2.urlopen(self.req)
+
+            response_codes = {400: 'Bad Request',
+                              404: 'Not Found',
+                              413: 'Request Entity Too Large',
+                              415: 'Unsupported Media Type',
+                              999: 'Unable to process request at this time', }
+
+            if self.response.code != 200:
+                raise PlacemakerApiError('Request received a response code of %d: %s' % (self.response.code, response_codes[self.response.code]))
+            self.response_xml = self.response.read()
             self.tree = ElementTree.fromstring(self.response_xml)
             self.doc = self.tree.find('%sdocument' % TAG_PREFIX)
             place_details = self.doc.findall('%splaceDetails' % TAG_PREFIX)
