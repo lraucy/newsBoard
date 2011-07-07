@@ -16,6 +16,7 @@ var lastCluster;
 var search;
 var theme = "All";
 var dateSelection = "";
+var dateEnd = "";
 
 
 google.load('visualization', '1');
@@ -24,8 +25,9 @@ google.load('visualization', '1');
 function setData() {
 	var requestSearch = (search == undefined) ? "" : " AND Description CONTAINS IGNORING CASE '" + search +"'";
 	var themeRequest = (theme == "All") ? "" : " AND Topic = '" + theme +"'";
-	var dateRequest = (dateSelection == "") ? "" : " AND Date = '" + dateSelection + "'";
-	var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Latitude, Longitude FROM 1019598 WHERE Language='" + language + "'" + requestSearch + themeRequest + dateRequest));
+	var dateRequest = (dateSelection == "") ? "" : " AND Date >= '" + dateSelection + "'";
+	var dateEndRequest = (dateEnd == "") ? "" : " AND Date <= '" + dateEnd + "'";
+	var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Latitude, Longitude FROM 1019598 WHERE Language='" + language + "'" + requestSearch + themeRequest + dateRequest + dateEndRequest));
 	query.send(getData);
 }
 
@@ -76,8 +78,9 @@ function getNewsCluster(cluster)
 		// so we use this sort of "hack"
 		var themeRequest = (theme == "All") ? "" : " AND Topic = '" + theme +"'";
 		var requestSearch = (search == undefined) ? "" : " AND Description CONTAINS IGNORING CASE '" + search +"'";
-		var dateRequest = (dateSelection == "") ? "" : " AND Date = '" + dateSelection + "'";
-		var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Title, Date, url, Description, Latitude, Longitude, Source, Topic, Location FROM 1019598 WHERE Latitude >= " + (min_lat - 0.01) + " AND Latitude <= " + (max_lat + 0.01) + " AND Longitude >= " + (min_lng - 0.01) + " AND Longitude <= " + (max_lng + 0.01) + " AND Language = '" + language + "'" + requestSearch + themeRequest + dateRequest + " ORDER BY Date DESC"));
+		var dateRequest = (dateSelection == "") ? "" : " AND Date >= '" + dateSelection + "'";
+		var dateEndRequest = (dateEnd == "") ? "" : " AND Date <= '" + dateEnd + "'";
+		var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Title, Date, url, Description, Latitude, Longitude, Source, Topic, Location FROM 1019598 WHERE Latitude >= " + (min_lat - 0.01) + " AND Latitude <= " + (max_lat + 0.01) + " AND Longitude >= " + (min_lng - 0.01) + " AND Longitude <= " + (max_lng + 0.01) + " AND Language = '" + language + "'" + requestSearch + themeRequest + dateRequest + dateEndRequest + " ORDER BY Date DESC"));
 
 		// we put the loading image
 		$("#news_list").html('<div class="waiter"></div>');

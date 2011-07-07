@@ -61,8 +61,15 @@ function menuInitialization()
 		setData();
 		$("#news_list").html("");
 	});
+	$("#dateend").change(function(){
+		dateEnd = $(this).val();
+		mc.clearMarkers();
+		setData();
+		$("#news_list").html("");
+	});
 	$(function(){
 		$("#datepicker").datepicker({ dateFormat: 'mm/dd/yy'});
+		$("#dateend").datepicker({ dateFormat: 'mm/dd/yy'});
 	});
 }
 

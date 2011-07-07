@@ -81,8 +81,8 @@ if(preg_match("/iphone|android|symbian/i",
 	<option value="spotlight">spotlight</option>
 	<option value="starred">starred</option>
 					</select></div>
-<div id="language_chooser"><a href="frise.png">Timeline example</a> | <a href="#" onclick="dezoomMap();">Accueil</a> | <span class="lang">en</span> <a href="#" onclick="setLanguage(this);"><span class="lang">fr</span></a> <a href="#" onclick="setLanguage(this);"><span class="lang">es</span></a></div>
-<div id="dateChooser">Day: <input type="text" size="10" id="datepicker" /></div>
+<div id="language_chooser"><a href="frise.png">Example</a> | <a href="#" onclick="dezoomMap();">Accueil</a> | <span class="lang">en</span> <a href="#" onclick="setLanguage(this);"><span class="lang">fr</span></a> <a href="#" onclick="setLanguage(this);"><span class="lang">es</span></a></div>
+<div id="dateChooser">Date: <input type="text" size="8" id="datepicker" /> to <input type="text" size="8" id="dateend" /></div>
 </div>
 					<div id="map_canvas"></div>
 				</div>
