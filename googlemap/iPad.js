@@ -62,7 +62,7 @@ function contentPopupiPad(response, numRows, numCols)
 			var dateFormat = (date.getMonth()+1) + "/" + date.getDate() + "/" + date.getFullYear();
 		else
 			var dateFormat = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
-		htmlContent += '<h3><a href="' + row[2] + '" class="external_link">' + row[0] + '</a></h3><h4><span class="source">' + row[6] + '</span> - <span class="theme">' + row[7] + '</span> - <span class="newsDate">' + dateFormat  + '</span></h4><p>' + row[3] + '</p></div>';
+		htmlContent += '<h3><a href="' + row[2] + '" class="external_link">' + row[0] + '</a></h3><h4><span class="source">' + row[6] + '</span> - <span class="theme">' + row[7] + '</span> - <span class="newsDate">' + dateFormat  + '</span> - <span class="newsLocation">' + row[8] + '</span></h4><p>' + row[3] + '</p></div>';
 		if (window.orientation == 0 || window.orientation == 180) htmlContent += '</td>'
 	}
 	return htmlContent;

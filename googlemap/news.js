@@ -77,7 +77,7 @@ function getNewsCluster(cluster)
 		var themeRequest = (theme == "All") ? "" : " AND Topic = '" + theme +"'";
 		var requestSearch = (search == undefined) ? "" : " AND Description CONTAINS IGNORING CASE '" + search +"'";
 		var dateRequest = (dateSelection == "") ? "" : " AND Date = '" + dateSelection + "'";
-		var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Title, Date, url, Description, Latitude, Longitude, Source, Topic FROM 1019598 WHERE Latitude >= " + (min_lat - 0.01) + " AND Latitude <= " + (max_lat + 0.01) + " AND Longitude >= " + (min_lng - 0.01) + " AND Longitude <= " + (max_lng + 0.01) + " AND Language = '" + language + "'" + requestSearch + themeRequest + dateRequest + " ORDER BY Date DESC"));
+		var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq=' + encodeURIComponent("SELECT Title, Date, url, Description, Latitude, Longitude, Source, Topic, Location FROM 1019598 WHERE Latitude >= " + (min_lat - 0.01) + " AND Latitude <= " + (max_lat + 0.01) + " AND Longitude >= " + (min_lng - 0.01) + " AND Longitude <= " + (max_lng + 0.01) + " AND Language = '" + language + "'" + requestSearch + themeRequest + dateRequest + " ORDER BY Date DESC"));
 
 		// we put the loading image
 		$("#news_list").html('<div class="waiter"></div>');
@@ -117,7 +117,7 @@ function contentPopupPC(response, numRows, numCols) {
 			var dateFormat = (date.getMonth()+1) + "/" + date.getDate() + "/" + date.getFullYear();
 		else
 			var dateFormat = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
-		htmlContent += '<h3><a href="' + row[2] + '" class="external_link">' + row[0] + '</a></h3><h4><span class="source">' + row[6] + '</span> - <span class="theme">' + row[7] + '</span> - <span class="newsDate">' + dateFormat+ '</span></h4><p>' + row[3] + '</p></div>';
+		htmlContent += '<h3><a href="' + row[2] + '" class="external_link">' + row[0] + '</a></h3><h4><span class="source">' + row[6] + '</span> - <span class="theme">' + row[7] + '</span> - <span class="newsDate">' + dateFormat+ '</span> - <span class="newsLocation">' + row[8] + '</span></h4><p>' + row[3] + '</p></div>';
 	}
 	return htmlContent;
 
